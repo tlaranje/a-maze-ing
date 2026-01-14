@@ -1,6 +1,6 @@
 from .utlis.windows_utlis import close_windows, create_window
 from .utlis.img_utlis import ImgData, create_png_image, create_xpm_image
-from .load_config import read_config_file
+from .load_config import read_config_file, ConfigData
 from mlx import Mlx
 import sys
 
@@ -13,13 +13,14 @@ class XVar:
         self.windows: list[int] = []
         self.images: list[ImgData] = []
 
-#a
+
 if __name__ == "__main__":
     xvar = XVar()
 
+    data = read_config_file("config.txt")
+
     windows = [
-        {"title": "Test 1", "width": 200, "height": 200},
-        {"title": "Test 2", "width": 400, "height": 400}
+        {"title": "Test 1", "width": data.width, "height": data.height},
     ]
 
     # Mlx Initialisation
