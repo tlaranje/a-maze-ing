@@ -13,7 +13,7 @@ class XVar:
         self.windows: list[int] = []
         self.images: list[ImgData] = []
 
-
+#a
 if __name__ == "__main__":
     xvar = XVar()
 
