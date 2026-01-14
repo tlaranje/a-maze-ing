@@ -1,5 +1,5 @@
 from .utlis.windows_utlis import close_windows, create_window
-from .utlis.img_utlis import ImgData, create_png_image, create_xpm_image
+from .utlis.images_utlis import ImgData, create_png_image, create_xpm_image
 from .load_config import read_config_file, ConfigData
 from mlx import Mlx
 import sys
