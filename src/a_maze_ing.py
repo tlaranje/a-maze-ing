@@ -19,6 +19,8 @@ if __name__ == "__main__":
 
     data = read_config_file("config.txt")
 
+    for key, value in vars(data).items():
+        print(key, value)
     windows = [
         {"title": "Test 1", "width": data.width, "height": data.height},
     ]
