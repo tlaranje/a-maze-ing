@@ -29,3 +29,4 @@ def close_windows(xvar) -> None:
             lambda w: close_single_window(xvar, w),
             window
         )
+

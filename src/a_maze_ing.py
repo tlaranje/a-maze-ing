@@ -1,5 +1,6 @@
 from .utlis.windows_utlis import close_windows, create_window
 from .utlis.img_utlis import ImgData, create_png_image, create_xpm_image
+from .load_config import read_config_file
 from mlx import Mlx
 import sys
 
@@ -12,7 +13,7 @@ class XVar:
         self.windows: list[int] = []
         self.images: list[ImgData] = []
 
-#a
+
 if __name__ == "__main__":
     xvar = XVar()
 
@@ -30,6 +31,7 @@ if __name__ == "__main__":
 
     xvar.mlx_ptr = xvar.mlx.mlx_init()
 
+    read_config_file("config.txt")
     # Windows creation
     try:
         for w in windows:
@@ -38,9 +40,9 @@ if __name__ == "__main__":
         print(f"Error Win create: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # Images creation
+    """ # Images creation
     create_png_image(xvar, "images/puffy_small.png", xvar.windows[0], 0, 0)
-    create_xpm_image(xvar, "images/Dont_panic.xpm", xvar.windows[1], 0, 0)
+    create_xpm_image(xvar, "images/Dont_panic.xpm", xvar.windows[1], 0, 0) """
 
     close_windows(xvar)
     xvar.mlx.mlx_loop(xvar.mlx_ptr)
