@@ -6,15 +6,16 @@ P3          := python3
 RM          := rm -rf
 FIND        := find
 CC          := gcc
-PKGCONFIG   := pkg-config
 
 # === Sources ===
 SRC         := src/main.c
 BIN         := a_maze_ing
 
 # === Flags (via pkg-config) ===
-CFLAGS      := $(shell $(PKGCONFIG) --cflags xcb xcb-keysyms vulkan zlib libbsd)
-LDFLAGS     := $(shell $(PKGCONFIG) --libs xcb xcb-keysyms vulkan zlib libbsd)
+PKG := pkg-config
+CFLAGS  := $(PKG) --cflags xcb xcb-keysyms vulkan zlib libbsd
+LDFLAGS := $(PKG) --libs   xcb xcb-keysyms vulkan zlib libbsd
+
 
 # === Build targets ===
 install:
