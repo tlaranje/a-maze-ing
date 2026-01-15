@@ -1,6 +1,3 @@
-import sys
-
-
 class ImgData:
     """Structure for image data"""
     def __init__(self):

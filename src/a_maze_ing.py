@@ -1,6 +1,6 @@
-from .utlis.windows_utlis import close_windows, create_window
-from .utlis.img_utlis import ImgData, create_png_image, create_xpm_image
-from .load_config import read_config_file, ConfigData
+from .rendering.windows_utils import close_windows, create_window
+from .rendering.images_utils import ImgData, create_png_image
+from .parsing.load_config import read_config_file
 from mlx import Mlx
 import sys
 
@@ -17,6 +17,7 @@ class XVar:
 def draw_walls(lst_cords: list[tuple[int, int]]):
     for x, y in lst_cords:
         create_png_image(xvar, "images/wall.png", xvar.windows[0], x, y)
+
 
 if __name__ == "__main__":
     xvar = XVar()

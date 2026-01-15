@@ -1,17 +1,6 @@
 import sys
 from typing import Optional
-
-
-class ConfigData:
-    """All program required parameters"""
-
-    def __init__(self) -> None:
-        self.width: int = None
-        self.height: int = None
-        self.entry: tuple = None
-        self.exit: tuple = None
-        self.output_file: str = None
-        self.perfect: bool = None
+from ..maze_generator.MazeGenerator import MazeGenerator
 
 
 def uint(string: str, only_positive: Optional[bool] = False) -> int:
@@ -24,34 +13,34 @@ def uint(string: str, only_positive: Optional[bool] = False) -> int:
     return number
 
 
-def parse_config_data(config: ConfigData, key: str, value: str) -> None:
-    """Get all mandatory config datas and raise errors"""
+def parse_maze(maze: MazeGenerator, key: str, value: str) -> None:
+    """Get all mandatory maze datas and raise errors"""
     match key:
         case "WIDTH":
-            config.width = uint(value, only_positive=True)
+            maze.width = uint(value, only_positive=True)
         case "HEIGHT":
-            config.height = uint(value, only_positive=True)
+            maze.height = uint(value, only_positive=True)
         case "ENTRY":
             entry: tuple = tuple(map(uint, value.split(",")))
             if len(entry) != 2:
                 raise Exception("ENTRY must be x, y values")
-            config.entry = entry
+            maze.entry = entry
         case "EXIT":
             exit_: tuple = tuple(map(uint, value.split(",")))
             if len(exit_) != 2:
                 raise Exception("EXIT must be x, y values")
-            config.exit = exit_
+            maze.exit = exit_
         case "OUTPUT_FILE":
-            config.output_file = value
+            maze.output_file = value
         case "PERFECT":
             if value != "True" and value != "False":
                 raise Exception("PERFECT must be True or False")
-            config.perfect = value == "True"
+            maze.perfect = value == "True"
 
 
-def read_config_file(file: str) -> ConfigData:
+def read_config_file(file: str) -> MazeGenerator:
     """Read and parse the configuration file"""
-    config_data: ConfigData = ConfigData()
+    maze: MazeGenerator = MazeGenerator()
     try:
         with open(file, "r") as fd:
             for i, line in enumerate(fd, start=1):
@@ -63,11 +52,13 @@ def read_config_file(file: str) -> ConfigData:
                     raise ValueError(
                         f"Invalid KEY VALUE in line {i}"
                     )
-                parse_config_data(config_data, key_value[0], key_value[1])
-        for _, value in vars(config_data).items():
+                parse_maze(maze, key_value[0], key_value[1])
+        for _, value in vars(maze).items():
             if value is None:
                 raise ValueError("Missing mandatory values on config")
+        if maze.entry == maze.exit:
+            raise ValueError("Entry and Exits must be different")
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
-    return config_data
+    return maze
