@@ -54,9 +54,16 @@ def read_config_file(file: str) -> ConfigData:
     config_data: ConfigData = ConfigData()
     try:
         with open(file, "r") as fd:
-            for line in fd:
-                key, value = line.split("=")
-                parse_config_data(config_data, key.strip(), value.strip())
+            for i, line in enumerate(fd, start=1):
+                line = line.strip()
+                if line.startswith("#"):
+                    continue
+                key_value: list[str] = line.split("=")
+                if len(key_value) != 2:
+                    raise ValueError(
+                        f"Invalid KEY VALUE in line {i}"
+                    )
+                parse_config_data(config_data, key_value[0], key_value[1])
         for _, value in vars(config_data).items():
             if value is None:
                 raise ValueError("Missing mandatory values on config")

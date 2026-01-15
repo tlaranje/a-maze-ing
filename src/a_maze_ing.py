@@ -14,13 +14,19 @@ class XVar:
         self.images: list[ImgData] = []
 
 
+def draw_walls(lst_cords: list[tuple[int, int]]):
+    for x, y in lst_cords:
+        create_png_image(xvar, "images/wall.png", xvar.windows[0], x, y)
+
 if __name__ == "__main__":
     xvar = XVar()
 
     data = read_config_file("config.txt")
 
-    for key, value in vars(data).items():
-        print(key, value)
+    lst_cords = [
+        (0, 0),
+    ]
+
     windows = [
         {"title": "Test 1", "width": data.width, "height": data.height},
     ]
@@ -43,9 +49,7 @@ if __name__ == "__main__":
         print(f"Error Win create: {e}", file=sys.stderr)
         sys.exit(1)
 
-    """ # Images creation
-    create_png_image(xvar, "images/puffy_small.png", xvar.windows[0], 0, 0)
-    create_xpm_image(xvar, "images/Dont_panic.xpm", xvar.windows[1], 0, 0) """
+    draw_walls(lst_cords)
 
     close_windows(xvar)
     xvar.mlx.mlx_loop(xvar.mlx_ptr)
