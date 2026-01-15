@@ -1,7 +1,8 @@
 from .rendering.windows_utils import close_windows, create_window
 from .rendering.images_utils import ImgData, create_png_image
-from .parsing.load_config import read_config_file
 from mlx import Mlx
+from src.maze_generator.MazeGenerator import MazeGenerator
+from src.maze_generator.MazeAlgorithms import MazeAlgorithms
 import sys
 
 
@@ -22,14 +23,14 @@ def draw_walls(lst_cords: list[tuple[int, int]]):
 if __name__ == "__main__":
     xvar = XVar()
 
-    data = read_config_file("config.txt")
+    maze: MazeGenerator = MazeGenerator("config.txt")
 
     lst_cords = [
         (0, 0),
     ]
 
     windows = [
-        {"title": "Test 1", "width": data.width, "height": data.height},
+        {"title": "Test 1", "width": maze.width, "height": maze.height},
     ]
 
     # Mlx Initialisation
@@ -41,7 +42,6 @@ if __name__ == "__main__":
 
     xvar.mlx_ptr = xvar.mlx.mlx_init()
 
-    read_config_file("config.txt")
     # Windows creation
     try:
         for w in windows:
@@ -50,7 +50,9 @@ if __name__ == "__main__":
         print(f"Error Win create: {e}", file=sys.stderr)
         sys.exit(1)
 
-    draw_walls(lst_cords)
+    backtracking_algorithn = MazeAlgorithms()
+    backtracking_algorithn.backtracking(maze)
+    #draw_walls(lst_cords)
 
     close_windows(xvar)
     xvar.mlx.mlx_loop(xvar.mlx_ptr)

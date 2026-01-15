@@ -1,6 +1,6 @@
-import sys
 from typing import Optional
-from ..maze_generator.MazeGenerator import MazeGenerator
+from src.maze_generator.MazeGenerator import MazeGenerator
+from src.maze_generator import Position
 
 
 def uint(string: str, only_positive: Optional[bool] = False) -> int:
@@ -13,23 +13,23 @@ def uint(string: str, only_positive: Optional[bool] = False) -> int:
     return number
 
 
-def parse_maze(maze: MazeGenerator, key: str, value: str) -> None:
-    """Get all mandatory maze datas and raise errors"""
+def parse_config(maze: MazeGenerator, key: str, value: str) -> None:
+    """Get all mandatory config datas and raise errors"""
     match key:
         case "WIDTH":
             maze.width = uint(value, only_positive=True)
         case "HEIGHT":
             maze.height = uint(value, only_positive=True)
         case "ENTRY":
-            entry: tuple = tuple(map(uint, value.split(",")))
+            entry: list[int] = map(uint, value.split(","))
             if len(entry) != 2:
                 raise Exception("ENTRY must be x, y values")
-            maze.entry = entry
+            maze.entry = Position(entry[0], entry[1])
         case "EXIT":
-            exit_: tuple = tuple(map(uint, value.split(",")))
+            exit_: list[int] = map(uint, value.split(","))
             if len(exit_) != 2:
                 raise Exception("EXIT must be x, y values")
-            maze.exit = exit_
+            maze.exit = Position(exit_[0], exit_[1])
         case "OUTPUT_FILE":
             maze.output_file = value
         case "PERFECT":
@@ -38,31 +38,25 @@ def parse_maze(maze: MazeGenerator, key: str, value: str) -> None:
             maze.perfect = value == "True"
 
 
-def read_config_file(file: str) -> MazeGenerator:
+def read_config_file(maze: MazeGenerator, file: str) -> None:
     """Read and parse the configuration file"""
-    maze: MazeGenerator = MazeGenerator()
-    try:
-        with open(file, "r") as fd:
-            for i, line in enumerate(fd, start=1):
-                line = line.strip()
-                if line.startswith("#"):
-                    continue
-                key_value: list[str] = line.split("=")
-                if len(key_value) != 2:
-                    raise ValueError(
-                        f"Invalid KEY VALUE in line {i}"
-                    )
-                parse_maze(maze, key_value[0], key_value[1])
-        for _, value in vars(maze).items():
-            if value is None:
-                raise ValueError("Missing mandatory values on config")
-        if not maze.is_inside(maze.entry):
-            raise ValueError("ENTRY point is not inside maze")
-        if not maze.is_inside(maze.exit):
-            raise ValueError("EXIT is not inside maze")
-        if maze.entry == maze.exit:
-            raise ValueError("Entry and Exits must be different")
-    except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-    return maze
+    with open(file, "r") as fd:
+        for i, line in enumerate(fd, start=1):
+            line = line.strip()
+            if line.startswith("#"):
+                continue
+            key_value: list[str] = line.split("=")
+            if len(key_value) != 2:
+                raise ValueError(
+                    f"Invalid KEY VALUE in line {i}"
+                )
+            parse_config(maze, key_value[0], key_value[1])
+    for _, value in vars(maze).items():
+        if value is None:
+            raise ValueError("Missing mandatory values on config")
+    if not maze.is_inside(maze.entry):
+        raise ValueError("ENTRY point is not inside config")
+    if not maze.is_inside(maze.exit):
+        raise ValueError("EXIT is not inside config")
+    if maze.entry == maze.exit:
+        raise ValueError("Entry and Exits must be different")

@@ -3,7 +3,7 @@
 		- file not found
 		- file must contain all mandatory in  (KEY=VALUE) format
 		- start and exit must be diffent
-		- start and exit must be on maze bounds
+		- start and exit must be inside maze bounds
 	Ignore lines starting with '#'
 
 - MAZE GENERATION

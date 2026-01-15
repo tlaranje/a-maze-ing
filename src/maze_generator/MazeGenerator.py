@@ -1,24 +1,37 @@
-from typing import Optional as op
+from src.maze_generator import Position
 
 
 class MazeGenerator:
     # TODO
     """PUT DOCUMENTATION PLEASE"""
-    def __init__(self,
-                 height: op[int] = None,
-                 width: op[int] = None,
-                 entry: op[tuple] = None,
-                 _exit: op[tuple] = None,
-                 output_file: op[str] = None,
-                 perfect: op[bool] = None) -> None:
-        self.height: int = height
-        self.width: int = width
-        self.total_cells: int = width * height
-        self.entry: tuple = entry
-        self.exit: tuple = _exit
-        self.output_file: str = output_file
-        self.perfect: bool = perfect
 
-    def is_inside(self, point: tuple[int, int]) -> bool:
-        return (self.width - 1 > point[0] > 0
-                and self.height - 1 > point[1] > 0)
+    def __init__(self, file: str) -> None:
+        from src.parsing.load_config import read_config_file
+        self.height: int = None
+        self.width: int = None
+        self.entry: Position = None
+        self.exit: Position = None
+        self.output_file: str = None
+        self.perfect: bool = None
+        read_config_file(self, file)
+        self.total_cells: int = self.width * self.height
+        self.maze: list[list[int]] = [
+            [0xf for _ in range(self.width)] for _ in range(self.height)
+        ]
+
+    def is_inside(self, pos: Position) -> bool:
+        return (self.width - 1 > pos.x > 0
+                and self.height - 1 > pos.y > 0)
+
+    def render(self, current_position) -> None:
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.maze[x][y] == 0xf:
+                    chr = "#"
+                elif self.maze[x][y] & 0xf:
+                    chr = " "
+                if x == current_position[0] and y == current_position[1]:
+                    print(f"\033[31m{chr} \033[0m", end="")
+                else:
+                    print(f"{chr} ", end="")
+            print()
