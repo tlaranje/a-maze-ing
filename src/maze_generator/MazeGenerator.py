@@ -13,6 +13,7 @@ class MazeGenerator:
                  perfect: op[bool] = None) -> None:
         self.height: int = height
         self.width: int = width
+        self.total_cells: int = width * height
         self.entry: tuple = entry
         self.exit: tuple = _exit
         self.output_file: str = output_file
