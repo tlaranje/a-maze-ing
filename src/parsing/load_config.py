@@ -56,6 +56,10 @@ def read_config_file(file: str) -> MazeGenerator:
         for _, value in vars(maze).items():
             if value is None:
                 raise ValueError("Missing mandatory values on config")
+        if not maze.is_inside(maze.entry):
+            raise ValueError("ENTRY point is not inside maze")
+        if not maze.is_inside(maze.exit):
+            raise ValueError("EXIT is not inside maze")
         if maze.entry == maze.exit:
             raise ValueError("Entry and Exits must be different")
     except Exception as e:
