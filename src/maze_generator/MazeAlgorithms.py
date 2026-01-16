@@ -56,17 +56,8 @@ class MazeAlgorithms:
         current_cell: Position = maze.entry
 
         while not self.found_exit(current_cell, maze.exit):
-            maze.render(current_cell)
-            print(current_cell)
-            print(maze.exit)
-            print()
-            time.sleep(0.3)
-
             current_cell = self.move(maze, self.shortest_path, current_cell)
         self.shortest_path.append(current_cell)
-        maze.render(current_cell)
-        print(current_cell)
-        print()
 
     def backtracking_generate(self, maze: Maze) -> None:
         total_cells: int = maze.total_cells - maze.borders
@@ -78,13 +69,5 @@ class MazeAlgorithms:
             self.move(maze, backtracking, cell)
         current_cell: Position = maze.exit
         while self.visited_cells < total_cells:
-            maze.render(current_cell)
-            print(current_cell)
-            print(f"{self.visited_cells}/{total_cells}")
-            print()
-            time.sleep(0.3)
             current_cell = self.move(maze, backtracking, current_cell)
-        maze.render(Position(-1, -1))
-        print(current_cell)
-        print(f"{self.visited_cells}/{total_cells}")
-        print()
+

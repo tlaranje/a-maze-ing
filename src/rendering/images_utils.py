@@ -58,7 +58,7 @@ def create_xpm_image(xvar, img_name: str, window: int, x: int, y: int) -> None:
     img_data.bpp = bpp
     img_data.sl = sl
     img_data.iformat = iformat
-
+    
     xvar.images.append(img_data)
 
     xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, window, img_data.img, x, y)
