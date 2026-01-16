@@ -21,12 +21,12 @@ def parse_config(maze: MazeGenerator, key: str, value: str) -> None:
         case "HEIGHT":
             maze.height = uint(value, only_positive=True)
         case "ENTRY":
-            entry: list[int] = map(uint, value.split(","))
+            entry: list[int] = list(map(uint, value.split(",")))
             if len(entry) != 2:
                 raise Exception("ENTRY must be x, y values")
             maze.entry = Position(entry[0], entry[1])
         case "EXIT":
-            exit_: list[int] = map(uint, value.split(","))
+            exit_: list[int] = list(map(uint, value.split(",")))
             if len(exit_) != 2:
                 raise Exception("EXIT must be x, y values")
             maze.exit = Position(exit_[0], exit_[1])

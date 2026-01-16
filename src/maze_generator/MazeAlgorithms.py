@@ -20,12 +20,13 @@ class MazeAlgorithms:
             pos.left()
         ]
         valid_dirs: list[Position] = [
-            pos for pos in all_directions
-            if maze.is_inside(pos) and maze.maze[pos.x][pos.y] & VISITED
+            p for p in all_directions
+            if maze.is_inside(p) and maze.maze[p.x][p.y] & VISITED
         ]
-        for pos in valid_dirs:
-            maze.maze[pos.x][pos.y] &= ~(pos.direction)
-            maze.maze[pos.x][pos.y] |= VISITED
+        for p in valid_dirs:
+            maze.maze[p.x][p.y] &= ~(p.direction)
+            maze.maze[p.x][p.y] |= VISITED
+        self.all_possible_dir_cells[pos] = valid_dirs
         return valid_dirs
 
     def backtracking(self, maze: Maze) -> None:
@@ -35,6 +36,7 @@ class MazeAlgorithms:
         while visited_cells < maze.total_cells:
             maze.render(current_cell)
             print(current_cell)
+            print(visited_cells)
             print()
             time.sleep(1)
             valid_dirs: list[Position] = self.possibles_dirs(maze, current_cell)
@@ -43,5 +45,6 @@ class MazeAlgorithms:
                 next_cell: Position = random.choice(valid_dirs)
                 valid_dirs.remove(next_cell)
                 current_cell = next_cell
+                visited_cells += 1
             else:
                 current_cell = backtracking_cells.pop()
