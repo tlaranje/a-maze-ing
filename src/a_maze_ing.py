@@ -4,7 +4,7 @@ from mlx import Mlx
 from src.maze_generator.MazeGenerator import MazeGenerator
 from src.maze_generator.MazeAlgorithms import MazeAlgorithms
 import sys
-import random
+import time
 
 
 class XVar:
@@ -13,46 +13,36 @@ class XVar:
         self.mlx = None
         self.mlx_ptr = None
         self.windows: list[int] = []
-        self.images: list[ImgData] = []
         self.maze: MazeGenerator = None
         self.algorithn: MazeAlgorithms = None
+        self.wall_1: ImgData = None
+        self.wall_2: ImgData = None
+        self.finish_render: bool = True
 
 
-def draw_walls(maze: list[list[int]]):
-    cubes = ["images/wall_1.xpm", "images/wall_2.xpm"]
-    for row_index, row in enumerate(maze):
-        for col_index, cell in enumerate(row):
-            if (cell & 15) == 15:
-                create_xpm_image(
-                    xvar,
-                    "images/wall_1.xpm",
-                    xvar.windows[0],
-                    col_index * 16,
-                    row_index * 16
-                )
-            else:
-                create_xpm_image(
-                    xvar,
-                    "images/wall_2.xpm",
-                    xvar.windows[0],
-                    col_index * 16,
-                    row_index * 16
-                )
+def draw_walls(xvar, maze):
+    for y, row in enumerate(maze):
+        for x, cell in enumerate(row):
+            img = xvar.wall_1 if (cell & 15) == 15 else xvar.wall_2
+            time.sleep(0.001)
+            xvar.mlx.mlx_put_image_to_window(
+                xvar.mlx_ptr,
+                xvar.windows[0],
+                img.img,
+                x * img.width,
+                y * img.height
+            )
 
 
 def gere_key(key, xvar):
-    if key == 114:  # 'r'
+    if key == 114 and xvar.finish_render: # 'r'
+        xvar.finish_render = False
         xvar.mlx.mlx_clear_window(xvar.mlx_ptr, xvar.windows[0])
-        print(len(xvar.images))
-        for im in xvar.images:
-            xvar.mlx.mlx_destroy_image(xvar.mlx_ptr, im.img)
-            xvar.images.remove(im)
-            
-        print(len(xvar.images))
-        if len(xvar.images) == 0:
-            xvar.algorithm.find_shortest_path(xvar.maze)
-            xvar.algorithm.backtracking_generate(xvar.maze)
-            draw_walls(xvar.maze.maze)
+        xvar.algorithm.find_shortest_path(xvar.maze)
+        xvar.algorithm.backtracking_generate(xvar.maze)
+        draw_walls(xvar, xvar.maze.maze)
+        xvar.finish_render = True
+
         return 0
 
 
@@ -87,8 +77,19 @@ if __name__ == "__main__":
         print(f"Error Win create: {e}", file=sys.stderr)
         sys.exit(1)
 
-    draw_walls(xvar.maze.maze)
+    xvar.wall_1 = create_xpm_image(xvar, "images/wall_1.xpm")
+    xvar.wall_2 = create_xpm_image(xvar, "images/wall_2.xpm")
+
+    draw_walls(xvar, xvar.maze.maze)
+
     xvar.mlx.mlx_key_hook(xvar.windows[0], gere_key, xvar)
 
     close_windows(xvar)
     xvar.mlx.mlx_loop(xvar.mlx_ptr)
+
+    xvar.mlx.mlx_destroy_image(xvar.mlx_ptr, xvar.wall_1.img)
+    xvar.mlx.mlx_destroy_image(xvar.mlx_ptr, xvar.wall_2.img)
+
+    xvar.mlx.mlx_release(xvar.mlx_ptr)
+
+

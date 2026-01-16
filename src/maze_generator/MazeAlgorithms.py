@@ -42,7 +42,6 @@ class MazeAlgorithms:
             cur = next_cell
         else:
             cur = stack.pop()
-
         return cur
 
     @staticmethod
@@ -54,7 +53,9 @@ class MazeAlgorithms:
 
     def find_shortest_path(self, maze: Maze) -> None:
         current_cell: Position = maze.entry
-
+        maze.clear()
+        self.shortest_path = []
+        self.all_possible_dir_cells = {}
         while not self.found_exit(current_cell, maze.exit):
             current_cell = self.move(maze, self.shortest_path, current_cell)
         self.shortest_path.append(current_cell)

@@ -34,10 +34,8 @@ def create_png_image(xvar, img_name: str, window: int, x: int, y: int) -> None:
 
     xvar.images.append(img_data)
 
-    xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, window, img_data.img, x, y)
 
-
-def create_xpm_image(xvar, img_name: str, window: int, x: int, y: int) -> None:
+def create_xpm_image(xvar, img_name: str) -> ImgData:
     result = xvar.mlx.mlx_xpm_file_to_image(xvar.mlx_ptr, img_name)
 
     if not result:
@@ -58,7 +56,5 @@ def create_xpm_image(xvar, img_name: str, window: int, x: int, y: int) -> None:
     img_data.bpp = bpp
     img_data.sl = sl
     img_data.iformat = iformat
-    
-    xvar.images.append(img_data)
 
-    xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, window, img_data.img, x, y)
+    return img_data

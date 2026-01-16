@@ -20,13 +20,13 @@ def close_windows(xvar) -> None:
         if not xvar.windows:
             xvar.mlx.mlx_loop_exit(xvar.mlx_ptr)
 
-    for window in xvar.windows:
+    for win in xvar.windows:
         # win_ptr, x_event, x_mask, callback, param
         xvar.mlx.mlx_hook(
-            window,
+            win,
             33,
             0,
-            lambda w: close_single_window(xvar, w),
-            window
+            (lambda w=win: close_single_window(xvar, w)),
+            win
         )
 
