@@ -15,6 +15,7 @@ class MazeGenerator:
         self.perfect: bool = None
         read_config_file(self, file)
         self.total_cells: int = self.width * self.height
+        self.borders: int = (self.height * 2) - 4 + self.width * 2
         self.maze: list[list[int]] = [
             [0xf for _ in range(self.width)] for _ in range(self.height)
         ]
@@ -26,9 +27,9 @@ class MazeGenerator:
     def render(self, current_position) -> None:
         for y in range(self.height):
             for x in range(self.width):
-                if self.maze[x][y] == 0xf:
+                if (self.maze[x][y] & 0xf) == 0xf:
                     chr = "#"
-                elif self.maze[x][y] & 0xf:
+                else:
                     chr = " "
                 if x == current_position.x and y == current_position.y:
                     print(f"\033[31m{chr} \033[0m", end="")

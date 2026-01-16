@@ -3,7 +3,7 @@ from typing import Optional
 from enum import IntEnum
 
 # MACROS
-VISITED: int = 0xf
+VISITED: int = 0x10
 
 
 class Direction(IntEnum):
