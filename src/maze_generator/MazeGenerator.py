@@ -24,6 +24,11 @@ class MazeGenerator:
         return (self.width - 1 > pos.x > 0
                 and self.height - 1 > pos.y > 0)
 
+    def clear(self) -> None:
+        for x in range(self.width):
+            for y in range(self.height):
+                self.maze[x][y] = 0xf
+
     def render(self, current_position) -> None:
         for y in range(self.height):
             for x in range(self.width):

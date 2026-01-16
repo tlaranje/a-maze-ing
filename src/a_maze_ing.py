@@ -51,8 +51,8 @@ if __name__ == "__main__":
     #     sys.exit(1)
 
     backtracking_algorithn = MazeAlgorithms()
-    #backtracking_algorithn.backtracking(maze)
-    backtracking_algorithn.shortest_path(maze)
+    backtracking_algorithn.find_shortest_path(maze)
+    backtracking_algorithn.backtracking_generate(maze)
     #draw_walls(lst_cords)
 
     # close_windows(xvar)
