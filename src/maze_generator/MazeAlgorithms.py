@@ -28,20 +28,36 @@ class MazeAlgorithms:
         for p in valid_dirs:
             maze.maze[pos.x][pos.y] &= ~(p.direction)
             maze.maze[p.x][p.y] |= VISITED
-        self.visited_cells += len(valid_dirs) + 1
+        self.visited_cells += len(valid_dirs)
         self.all_possible_dir_cells[pos] = valid_dirs
         return valid_dirs
 
-    def backtracking(self, maze: Maze) -> None:
-        total_cells: int = maze.total_cells - maze.borders
+    @staticmethod
+    def found_exit(pos: Position, _exit: Position) -> bool:
+        all_directions: list[Position] = [
+            pos.up(),
+            pos.down(),
+            pos.right(),
+            pos.left()
+        ]
+        """ print(pos.up())
+        print(pos.down())
+        print(pos.right())
+        print(pos.left()) """
+        for d in all_directions:
+            if (d.x == _exit.x) and (d.y == _exit.y):
+                return True
+        return False
+
+    def shortest_path(self, maze: Maze) -> list[Position]:
         backtracking_cells: list[Position] = []
         current_cell: Position = maze.entry
-        while self.visited_cells < total_cells:
+        while not self.found_exit(current_cell, maze.exit):
             maze.render(current_cell)
             print(current_cell)
-            print(f"{self.visited_cells}/{total_cells}")
+            print(maze.exit)
             print()
-            time.sleep(0.5)
+            time.sleep(1)
             valid_dirs: list[Position] = self.possibles_dirs(maze, current_cell)
             if valid_dirs:
                 backtracking_cells.append(current_cell)
@@ -50,3 +66,31 @@ class MazeAlgorithms:
                 current_cell = next_cell
             else:
                 current_cell = backtracking_cells.pop()
+        maze.render(current_cell)
+        print(current_cell)
+        print()
+        return backtracking_cells
+
+    def backtracking(self, maze: Maze) -> None:
+        total_cells: int = maze.total_cells - maze.borders
+        backtracking_cells: list[Position] = []
+        current_cell: Position = maze.entry
+        self.visited_cells = 1
+        while self.visited_cells < total_cells:
+            maze.render(current_cell)
+            print(current_cell)
+            print(f"{self.visited_cells}/{total_cells}")
+            print()
+            time.sleep(0.001)
+            valid_dirs: list[Position] = self.possibles_dirs(maze, current_cell)
+            if valid_dirs:
+                backtracking_cells.append(current_cell)
+                next_cell: Position = random.choice(valid_dirs)
+                valid_dirs.remove(next_cell)
+                current_cell = next_cell
+            else:
+                current_cell = backtracking_cells.pop()
+        maze.render(Position(-1, -1))
+        print(current_cell)
+        print(f"{self.visited_cells}/{total_cells}")
+        print()

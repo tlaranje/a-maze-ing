@@ -30,9 +30,9 @@ class MazeGenerator:
                 if (self.maze[x][y] & 0xf) == 0xf:
                     chr = "#"
                 else:
-                    chr = " "
+                    chr = "."
                 if x == current_position.x and y == current_position.y:
-                    print(f"\033[31m{chr} \033[0m", end="")
+                    print(f"\033[31m@\033[0m", end="")
                 else:
-                    print(f"{chr} ", end="")
+                    print(f"{chr}", end="")
             print()

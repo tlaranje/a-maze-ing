@@ -43,16 +43,17 @@ if __name__ == "__main__":
     xvar.mlx_ptr = xvar.mlx.mlx_init()
 
     # Windows creation
-    try:
-        for w in windows:
-            create_window(xvar, w["title"], w["width"], w["height"])
-    except Exception as e:
-        print(f"Error Win create: {e}", file=sys.stderr)
-        sys.exit(1)
+    # try:
+    #     for w in windows:
+    #         create_window(xvar, w["title"], w["width"], w["height"])
+    # except Exception as e:
+    #     print(f"Error Win create: {e}", file=sys.stderr)
+    #     sys.exit(1)
 
     backtracking_algorithn = MazeAlgorithms()
-    backtracking_algorithn.backtracking(maze)
+    #backtracking_algorithn.backtracking(maze)
+    backtracking_algorithn.shortest_path(maze)
     #draw_walls(lst_cords)
 
-    close_windows(xvar)
-    xvar.mlx.mlx_loop(xvar.mlx_ptr)
+    # close_windows(xvar)
+    # xvar.mlx.mlx_loop(xvar.mlx_ptr)
