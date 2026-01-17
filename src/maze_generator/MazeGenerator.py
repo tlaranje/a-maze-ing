@@ -29,15 +29,13 @@ class MazeGenerator:
             for y in range(self.height):
                 self.maze[x][y] = 0xf
 
-    def render(self, current_position) -> None:
-        for y in range(self.height):
-            for x in range(self.width):
-                if (self.maze[x][y] & 0xf) == 0xf:
-                    chr = "#"
-                else:
-                    chr = "."
-                if x == current_position.x and y == current_position.y:
-                    print(f"\033[31m@\033[0m", end="")
-                else:
-                    print(f"{chr}", end="")
-            print()
+    def save(self) -> None:
+        try:
+            with open(self.output_file, "w") as file:
+                for line in self.maze:
+                    for cell in line:
+                        file.write(f"{cell & 0xf:X}")
+                    file.write("\n")
+        except Exception as e:
+            print(f"Error: {e}")
+            exit(1)

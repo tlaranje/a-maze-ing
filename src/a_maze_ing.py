@@ -1,73 +1,60 @@
 from .rendering.windows_utils import close_windows, create_window
-from .rendering.images_utils import ImgData, create_xpm_image
+from .rendering.images_utils import ImgData, draw_wall
 from mlx import Mlx
 from src.maze_generator.MazeGenerator import MazeGenerator
 from src.maze_generator.MazeAlgorithms import MazeAlgorithms
-import sys
+from typing import Optional
 import time
+import sys
 
 
 class XVar:
     """Structure for main vars"""
-    def __init__(self) -> None:
-        self.mlx = None
-        self.mlx_ptr = None
+
+    def __init__(self, file_path: str) -> None:
+        self.mlx: Mlx = Mlx()
+        self.mlx_ptr = self.mlx.mlx_init()
         self.windows: list[int] = []
-        self.maze: MazeGenerator = None
-        self.algorithn: MazeAlgorithms = None
-        self.wall_1: ImgData = None
-        self.wall_2: ImgData = None
-        self.finish_render: bool = True
+        self.maze: MazeGenerator = MazeGenerator(file_path)
+        self.algorithm: MazeAlgorithms = MazeAlgorithms()
+        self.buffer_img: ImgData = ImgData(
+            self.mlx, self.mlx_ptr, 1920, 1080
+        )
 
-
-def draw_walls(xvar, maze):
-    for y, row in enumerate(maze):
-        for x, cell in enumerate(row):
-            img = xvar.wall_1 if (cell & 15) == 15 else xvar.wall_2
-            time.sleep(0.001)
-            xvar.mlx.mlx_put_image_to_window(
-                xvar.mlx_ptr,
-                xvar.windows[0],
-                img.img,
-                x * img.width,
-                y * img.height
-            )
+    def render(self) -> None:
+        for y, row in enumerate(self.maze.maze):
+            for x, cell in enumerate(row):
+                if x == self.maze.entry.x and y == self.maze.entry.y:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF00FF00)
+                elif x == self.maze.exit.x and y == self.maze.exit.y:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF00FF00)
+                elif (cell & 0xf) == 0xf:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFFFF0000)
+                else:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF0000FF)
+        self.mlx.mlx_put_image_to_window(self.mlx_ptr, self.windows[0], self.buffer_img.ptr, 0, 0)
 
 
 def gere_key(key, xvar):
-    if key == 114 and xvar.finish_render: # 'r'
-        xvar.finish_render = False
-        xvar.mlx.mlx_clear_window(xvar.mlx_ptr, xvar.windows[0])
+    if key == 114: # 'r'
         xvar.algorithm.find_shortest_path(xvar.maze)
         xvar.algorithm.backtracking_generate(xvar.maze)
-        draw_walls(xvar, xvar.maze.maze)
-        xvar.finish_render = True
+        xvar.maze.save()
+        xvar.render()
 
         return 0
 
 
 if __name__ == "__main__":
-    xvar = XVar()
-
-    xvar.maze = MazeGenerator("config.txt")
-    xvar.algorithm = MazeAlgorithms()
-
-    lst_cords = [
-        (0, 0),
-    ]
+    xvar = XVar("config.txt")
 
     windows = [
-        {"title": "Test 1", "width": 1920, "height": 1080},
+        {
+            "title": "Test 1", 
+            "width": (xvar.maze.width * 16) + 32,
+            "height": (xvar.maze.height * 16) + 32
+        },
     ]
-
-    # Mlx Initialisation
-    try:
-        xvar.mlx = Mlx()
-    except Exception as e:
-        print(f"Error: Can't initialize MLX: {e}", file=sys.stderr)
-        sys.exit(1)
-
-    xvar.mlx_ptr = xvar.mlx.mlx_init()
 
     # Windows creation
     try:
@@ -77,18 +64,11 @@ if __name__ == "__main__":
         print(f"Error Win create: {e}", file=sys.stderr)
         sys.exit(1)
 
-    xvar.wall_1 = create_xpm_image(xvar, "images/wall_1.xpm")
-    xvar.wall_2 = create_xpm_image(xvar, "images/wall_2.xpm")
-
-    draw_walls(xvar, xvar.maze.maze)
-
+    xvar.render()
     xvar.mlx.mlx_key_hook(xvar.windows[0], gere_key, xvar)
 
     close_windows(xvar)
     xvar.mlx.mlx_loop(xvar.mlx_ptr)
-
-    xvar.mlx.mlx_destroy_image(xvar.mlx_ptr, xvar.wall_1.img)
-    xvar.mlx.mlx_destroy_image(xvar.mlx_ptr, xvar.wall_2.img)
 
     xvar.mlx.mlx_release(xvar.mlx_ptr)
 
