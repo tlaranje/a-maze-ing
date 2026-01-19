@@ -15,6 +15,7 @@ class MazeAlgorithms:
         self.maze: Maze = maze
         self.buffer_img: ImgData = buffer_img
         self.generation: Generator = self.backtracking_generate()
+        self.draw_generation: Generator = None
         self.cur: Position = maze.entry
 
     def possible_moves(self,
@@ -86,29 +87,41 @@ class MazeAlgorithms:
             current_cell = self.move(self.shortest_path, current_cell)
         self.shortest_path += [current_cell, maze.exit]
 
+    def draw_shortest_path(self, color: int, stack: Optional[list[Position]] = None) -> Generator:
+        if stack is None:
+            for cell in self.shortest_path:
+                draw_wall(self.buffer_img, cell.x+1, cell.y+1, 16, color)
+                yield
+            entry: Position = self.maze.entry
+            _exit: Position = self.maze.exit
+            draw_wall(self.buffer_img, entry.x+1, entry.y+1, 16, 0xFF0000FF)
+            draw_wall(self.buffer_img, _exit.x+1, _exit.y+1, 16, 0xFFFF0000)
+            return
+        path_len: int = len(self.shortest_path)
+        for i, cell in enumerate(self.shortest_path):
+            self.cur = cell
+            valid_moves: list[Position] = self.possible_moves(cell)
+            stack.append(cell)
+            if i < path_len - 1:
+                next_cell: Position = self.shortest_path[i + 1]
+                valid_moves.remove(next_cell)
+                if self.possible_moves(next_cell, set_visited=False):
+                    draw_wall(self.buffer_img, cell.x+1, cell.y+1, 16, color)
+                    self.maze.maze[cell.y][cell.x] &= ~(next_cell.direction)
+                    self.maze.maze[next_cell.y][next_cell.x] &= ~(next_cell.rev_direction())
+            yield
+
     def backtracking_generate(self) -> Generator:
         maze: Maze = self.maze
-        total_cells: int = maze.total_cells - maze.borders
+        #total_cells: int = maze.total_cells - maze.borders
         self.find_shortest_path()
         backtracking: list[Position] = []
         #self.visited_cells = 1
         maze.clear()
         self.all_possible_dir_cells = {}
-        path_len: int = len(self.shortest_path)
-        for i, cell in enumerate(self.shortest_path):
-            self.cur = cell
-            valid_moves: list[Position] = self.possible_moves(cell)
-            backtracking.append(cell)
-            if i < path_len - 1:
-                next_cell: Position = self.shortest_path[i + 1]
-                valid_moves.remove(next_cell)
-                if self.possible_moves(next_cell, set_visited=False):
-                    draw_wall(self.buffer_img, cell.x+1, cell.y+1, 16, 0xFFFF0000)
-                    self.maze.maze[cell.y][cell.x] &= ~(next_cell.direction)
-                    self.maze.maze[next_cell.y][next_cell.x] &= ~(next_cell.rev_direction())
-            yield
+        yield from self.draw_shortest_path(0xFFFF0000, backtracking)
         #while self.visited_cells < total_cells:
         while backtracking:
             self.cur = self.move(backtracking, self.cur, render=True)
             yield
-        self.cur = Position(-1, -1, None)
+        self.draw_generation = self.draw_shortest_path(0xFF00FF00)

@@ -33,3 +33,5 @@
 
 - README
 	The same Documentation of the mazeGenerator must be on readme
+
+- FIX PROBLEM THAT MAZE DONT WORK WITH NON-SQUARE MAZES

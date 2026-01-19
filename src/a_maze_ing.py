@@ -3,8 +3,8 @@ from mlx import Mlx
 from src.maze_generator.MazeGenerator import MazeGenerator
 from src.maze_generator.MazeAlgorithms import MazeAlgorithms
 from src.maze_generator import Position
+from typing import Generator
 import sys
-import os
 
 
 class XVar:
@@ -22,7 +22,7 @@ class XVar:
             self.maze, self.buffer_img
         )
 
-    def render(self) -> None:
+    """ def render(self) -> None:
         for y, row in enumerate(self.maze.maze):
             for x, cell in enumerate(row):
                 if x == self.algorithm.cur.x and y == self.algorithm.cur.y:
@@ -35,8 +35,7 @@ class XVar:
                     draw_wall(self.buffer_img, x+1, y+1, 16, 0xFFFF0000)
                 else:
                     draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF0000FF)
-        self.mlx.mlx_put_image_to_window(self.mlx_ptr, self.window, self.buffer_img.ptr, 0, 0)
-
+        self.mlx.mlx_put_image_to_window(self.mlx_ptr, self.window, self.buffer_img.ptr, 0, 0) """
 
 def close_window(xvar: XVar) -> None:
     xvar.mlx.mlx_destroy_window(xvar.mlx_ptr, xvar.window)
@@ -52,26 +51,19 @@ def gere_key(key: int, xvar: XVar) -> None:
         xvar.maze.save()
         print(f"Maze saved on '{xvar.maze.output_file}'")
 
-    elif key == 106: # 'j'
-        try:
-            next(xvar.algorithm.generation)
-        except StopIteration:
-            pass
-        os.system("clear")
-        for row in xvar.maze.maze:
-            for cell in row:
-                print(f"{cell & 0xf:4b} ", end="")
-            print()
-        xvar.render()
     return 0
 
 
 def rendering_loop(xvar: XVar) -> None:
     try:
-        for _ in range(1):
+        for _ in range(10):
             next(xvar.algorithm.generation)
     except StopIteration:
-        pass
+        try:
+            for _ in range(10):
+                next(xvar.algorithm.draw_generation)
+        except StopIteration:
+            pass
     xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
 
 
