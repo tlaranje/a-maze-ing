@@ -28,3 +28,13 @@ class Position:
     def right(self): return Position(self.x + 1, self.y, Direction.EAST)
 
     def left(self): return Position(self.x - 1, self.y, Direction.WEST)
+
+    def rev_direction(self) -> Direction:
+        if self.direction == Direction.NORTH:
+            return Direction.SOUTH
+        elif self.direction == Direction.SOUTH:
+            return Direction.NORTH
+        elif self.direction == Direction.EAST:
+            return Direction.WEST
+        elif self.direction == Direction.WEST:
+            return Direction.EAST

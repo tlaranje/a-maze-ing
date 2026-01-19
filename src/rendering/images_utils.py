@@ -12,41 +12,23 @@ class ImgData:
             mlx.mlx_get_data_addr(self.ptr)
         self.total_size: int = len(self.data) - 3
 
+    def fill(self, color: int) -> None:
+        color = color.to_bytes(4, 'little')
+        for i in range(0, self.total_size - 1, 4):
+            self.data[i:i+4] = color
 
-# def create_xpm_image(xvar, img_name: str) -> ImgData:
-#     result = xvar.mlx.mlx_xpm_file_to_image(xvar.mlx_ptr, img_name)
-# 
-#     if not result:
-#         raise Exception("Can't load PNG")
-# 
-#     img_ptr, width, height = result
-# 
-#     if not img_ptr:
-#         raise Exception("Can't create png")
-# 
-#     data, bpp, sl, iformat = xvar.mlx.mlx_get_data_addr(img_ptr)
-# 
-#     img_data = ImgData()
-#     img_data.img = img_ptr
-#     img_data.width = width
-#     img_data.height = height
-#     img_data.data = data
-#     img_data.bpp = bpp
-#     img_data.sl = sl
-#     img_data.iformat = iformat
-
-#    return img_data
 
 def draw_wall(buffer_img: ImgData, start_x: int, start_y: int, size: int, color: int) -> None:
     """Draw block of pixels on images buffer"""
     start_x *= size
     start_y *= size
+    color = color.to_bytes(4, 'little')
     for _ in range(size):
         x: int = start_x
         for _ in range(size):
             pos: int = (buffer_img.width * start_y + x) * 4
             if pos >= buffer_img.total_size:
                 continue
-            buffer_img.data[pos:pos+4] = color.to_bytes(4, 'little')
+            buffer_img.data[pos:pos+4] = color
             x += 1
         start_y += 1
