@@ -16,15 +16,17 @@ class XVar:
         self.mlx_ptr = self.mlx.mlx_init()
         self.windows: list[int] = []
         self.maze: MazeGenerator = MazeGenerator(file_path)
-        self.algorithm: MazeAlgorithms = MazeAlgorithms()
+        self.algorithm: MazeAlgorithms = MazeAlgorithms(self.maze)
         self.buffer_img: ImgData = ImgData(
             self.mlx, self.mlx_ptr, 1920, 1080
         )
 
     def render(self) -> None:
-        for y, row in enumerate(self.maze.maze):
-            for x, cell in enumerate(row):
-                if x == self.maze.entry.x and y == self.maze.entry.y:
+        for x, row in enumerate(self.maze.maze):
+            for y, cell in enumerate(row):
+                if x == self.algorithm.cur.x and y == self.algorithm.cur.y:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xfffec5d7)
+                elif x == self.maze.entry.x and y == self.maze.entry.y:
                     draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF00FF00)
                 elif x == self.maze.exit.x and y == self.maze.exit.y:
                     draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF00FF00)
@@ -44,13 +46,21 @@ def gere_key(key, xvar):
 
         return 0
 
+def rendering_loop(xvar: XVar) -> None:
+    try:
+        for _ in range(2):
+            next(xvar.algorithm.generation)
+    except StopIteration:
+        pass
+    xvar.render()
+
 
 if __name__ == "__main__":
     xvar = XVar("config.txt")
 
     windows = [
         {
-            "title": "Test 1", 
+            "title": "Test 1",
             "width": (xvar.maze.width * 16) + 32,
             "height": (xvar.maze.height * 16) + 32
         },
@@ -65,9 +75,10 @@ if __name__ == "__main__":
         sys.exit(1)
 
     xvar.render()
-    xvar.mlx.mlx_key_hook(xvar.windows[0], gere_key, xvar)
+    #xvar.mlx.mlx_key_hook(xvar.windows[0], gere_key, xvar)
 
     close_windows(xvar)
+    xvar.mlx.mlx_loop_hook(xvar.mlx_ptr, rendering_loop, xvar)
     xvar.mlx.mlx_loop(xvar.mlx_ptr)
 
     xvar.mlx.mlx_release(xvar.mlx_ptr)
