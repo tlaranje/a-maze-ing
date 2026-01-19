@@ -1,60 +1,24 @@
+from typing import Optional
+from src.a_maze_ing import XVar 
+
 class ImgData:
     """Structure for image data"""
-    def __init__(self):
-        self.img = None
-        self.width = 0
-        self.height = 0
+    def __init__(self, xvar: Optional[XVar]):
+        self.width = xvar.maze.width * xvar.cell_size
+        self.height = xvar.maze.height * xvar.cell_size
+        self.img = xvar.mlx.mlx_new_image(xvar.mlx_ptr, self.width, self.height)
         self.data = None
         self.sl = 0  # size line
         self.bpp = 0  # bits per pixel
         self.iformat = 0
+        self.data, self.bpp, self.sl, self.iformat = \
+            xvar.mlx.mlx_get_data_addr(self.img)
 
 
-def create_png_image(xvar, img_name: str, window: int, x: int, y: int) -> None:
-    result = xvar.mlx.mlx_png_file_to_image(xvar.mlx_ptr, img_name)
+def draw_pixel(xvar: XVar, size: int, x: int, y: int, color: str):
+    xvar.mlx.mlx_sync(xvar.mlx_ptr, xvar.mlx.SYNC_IMAGE_WRITABLE, xvar.img_2.img)
+    # fill image in white
+    for offset in range(0, xvar.img_2.sl * 100, 4):
+        xvar.img_2.data[offset:offset+4] = (0xFFFFFFFF).to_bytes(4, 'little')
 
-    if not result:
-        raise Exception("Can't load PNG")
-
-    img_ptr, width, height = result
-
-    if not img_ptr:
-        raise Exception("Can't create png")
-
-    data, bpp, sl, iformat = xvar.mlx.mlx_get_data_addr(img_ptr)
-
-    img_data = ImgData()
-    img_data.img = img_ptr
-    img_data.width = width
-    img_data.height = height
-    img_data.data = data
-    img_data.bpp = bpp
-    img_data.sl = sl
-    img_data.iformat = iformat
-
-    xvar.images.append(img_data)
-
-
-def create_xpm_image(xvar, img_name: str) -> ImgData:
-    result = xvar.mlx.mlx_xpm_file_to_image(xvar.mlx_ptr, img_name)
-
-    if not result:
-        raise Exception("Can't load PNG")
-
-    img_ptr, width, height = result
-
-    if not img_ptr:
-        raise Exception("Can't create png")
-
-    data, bpp, sl, iformat = xvar.mlx.mlx_get_data_addr(img_ptr)
-
-    img_data = ImgData()
-    img_data.img = img_ptr
-    img_data.width = width
-    img_data.height = height
-    img_data.data = data
-    img_data.bpp = bpp
-    img_data.sl = sl
-    img_data.iformat = iformat
-
-    return img_data
+    xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.win_1, xvar.img_2.img, 50, 50)
