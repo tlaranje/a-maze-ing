@@ -4,6 +4,7 @@ from src.maze_generator import MazeGenerator as Maze
 from src.maze_generator import Position, VISITED
 
 
+
 class MazeAlgorithms:
     """Provide diferent types of maze generation algorithms"""
 
@@ -45,20 +46,30 @@ class MazeAlgorithms:
         return cur
 
     @staticmethod
-    def found_exit(pos: Position, _exit: Position) -> bool:
-        return any(
-            d for d in [pos.up(), pos.down(), pos.right(), pos.left()]
-            if (d.x == _exit.x) and (d.y == _exit.y)
-        )
+    def found_exit(pos: Position, maze: Maze) -> bool:
+        _exit: Position = maze.exit
+        all_directions: list[Position] = [
+            pos.up(),
+            pos.down(),
+            pos.right(),
+            pos.left()
+        ]
+        for pos in all_directions:
+            if pos.x == _exit.x and pos.y == _exit.y:
+                maze.exit = Position(_exit.x, _exit.y, pos.direction)
+                return True
+        return False
 
     def find_shortest_path(self, maze: Maze) -> None:
+        #from src.a_maze_ing import draw_walls
         current_cell: Position = maze.entry
         maze.clear()
         self.shortest_path = []
         self.all_possible_dir_cells = {}
-        while not self.found_exit(current_cell, maze.exit):
+        while not self.found_exit(current_cell, maze):
+            #draw_walls(xvar, maze)
             current_cell = self.move(maze, self.shortest_path, current_cell)
-        self.shortest_path.append(current_cell)
+        self.shortest_path += [current_cell, maze.exit]
 
     def backtracking_generate(self, maze: Maze) -> None:
         total_cells: int = maze.total_cells - maze.borders
@@ -66,9 +77,12 @@ class MazeAlgorithms:
         self.visited_cells = 1
         maze.clear()
         self.all_possible_dir_cells = {}
-        for cell in self.shortest_path:
-            self.move(maze, backtracking, cell)
-        current_cell: Position = maze.exit
+        for i, cur in enumerate(self.shortest_path):
+            valid_dirs = self.possible_moves(maze, cur)
+            backtracking.append(cur)
+            if i < len(self.shortest_path) - 1:
+                self.all_possible_dir_cells[cur].remove(self.shortest_path[i + 1])
+        current_cell = maze.exit
         while self.visited_cells < total_cells:
             current_cell = self.move(maze, backtracking, current_cell)
 

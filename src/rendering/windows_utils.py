@@ -1,5 +1,13 @@
 
 def create_window(xvar, title: str, width: int, height: int) -> None:
+    # mlx_ptr, width, height, title
+    win = xvar.mlx.mlx_new_window(
+        xvar.mlx_ptr,
+        width,
+        height,
+        title)
+
+def create_window(xvar, title: str, width: int, height: int) -> None:
     win = xvar.mlx.mlx_new_window(xvar.mlx_ptr, width, height, title)
     if not win:
             raise Exception("Can't create window")

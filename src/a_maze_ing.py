@@ -1,7 +1,9 @@
-from src.rendering.windows_utils import close_windows, create_window
+from .rendering.windows_utils import close_windows, create_window
+from .rendering.images_utils import ImgData
 from src.maze_generator.MazeAlgorithms import MazeAlgorithms
 from src.maze_generator.MazeGenerator import MazeGenerator
 from mlx import Mlx
+import time
 import sys
 
 
@@ -9,41 +11,29 @@ class XVar:
     """Structure for main vars"""
     def __init__(self) -> None:
         self.mlx = Mlx()
-        self.mlx_ptr = None
+        self.mlx_ptr = self.mlx.mlx_init()
         self.windows: list[int] = []
         self.maze: MazeGenerator = MazeGenerator("config.txt")
         self.algorithn: MazeAlgorithms = MazeAlgorithms()
-        self.finish_render: bool = True
-        self.cell_size: int = 16
-        self.img: ImgData = None
+        self.img = ImgData(self)
 
 
 def gere_key(key, xvar):
-    if key == 114 and xvar.finish_render: # 'r'
-
-        """ xvar.algorithm.find_shortest_path(xvar.maze)
-        xvar.algorithm.backtracking_generate(xvar.maze) """
+    if key == 114: # 'r'
+        xvar.img.draw_pixel(xvar, 32, 0, 0, 0xffff0000)
+        xvar.img.draw_pixel(xvar, 32, 1, 0, 0xffff0000)
+        #xvar.mlx.mlx_clear_window(xvar.mlx_ptr, xvar.windows[0])
+        #xvar.algorithm.find_shortest_path(xvar.maze)
+        #xvar.algorithm.backtracking_generate(xvar.maze)
         return 0
 
 
 if __name__ == "__main__":
-    from src.rendering.images_utils import ImgData
-    
-    try:
-        xvar = XVar()
-        xvar.img = ImgData(xvar)
-    except Exception as e:
-        print(e)
+    xvar = XVar()
 
-    windows = [
-        {
-            "title": "Test 1",
-            "width": xvar.maze.width * 16,
-            "height": xvar.maze.height * 16
-        },
-    ]
-
-    xvar.mlx_ptr = xvar.mlx.mlx_init()
+    windows = [{"title": "Test 1",
+                "width": (xvar.maze.width * 16),
+                "height": (xvar.maze.height * 16)}]
 
     # Windows creation
     try:
