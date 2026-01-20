@@ -1,4 +1,6 @@
 from src.maze_generator import Position
+from src.rendering.images_utils import draw_wall, ImgData
+from typing import Optional
 
 
 class MazeGenerator:
@@ -39,3 +41,27 @@ class MazeGenerator:
         except Exception as e:
             print(f"Error: {e}")
             exit(1)
+
+    def draw_42(self, buffer_img: Optional[ImgData] = None) -> None:
+        logo_42: list[list[int]] = [
+            [16, 0,  16, 0,  0, 0,  16, 16, 16, 16],
+            [16, 0,  16, 0,  0, 0,  0,  0,  0,  16],
+            [16, 0,  16, 0,  0, 0,  0,  0,  0,  16],
+            [16, 0,  16, 0,  0, 0,  0,  0,  0,  16],
+            [16, 16, 16, 16, 0, 0,  16, 16, 16, 16],
+            [0,  0,  16, 0,  0, 0,  16, 0,  0,  0 ],
+            [0,  0,  16, 0,  0, 0,  16, 0,  0,  0 ],
+            [0,  0,  16, 0,  0, 0,  16, 0,  0,  0 ],
+            [0,  0,  16, 0,  0, 0,  16, 16, 16, 16],
+            [0,  0,  0,  0,  0, 0,  0,  0,  0,  0 ]
+        ]
+        maze_start_x: int = (self.width - 10) // 2
+        maze_start_y: int = (self.height - 10) // 2
+        for y in range(10):
+            for x in range(10):
+                self.maze[maze_start_y + y][maze_start_x + x] |= logo_42[y][x]
+                if buffer_img is None:
+                    continue
+                if logo_42[y][x] == 16:
+                    draw_wall(buffer_img, maze_start_x + x + 1, maze_start_y + y + 1, 16, 0x100FFFFF)
+

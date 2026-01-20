@@ -22,20 +22,20 @@ class XVar:
             self.maze, self.buffer_img
         )
 
-    """ def render(self) -> None:
+    def render(self) -> None:
         for y, row in enumerate(self.maze.maze):
             for x, cell in enumerate(row):
                 if x == self.algorithm.cur.x and y == self.algorithm.cur.y:
                     draw_wall(self.buffer_img, x+1, y+1, 16, 0xfffec5d7)
                 elif x == self.maze.entry.x and y == self.maze.entry.y:
-                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF00FF00)
-                elif x == self.maze.exit.x and y == self.maze.exit.y:
-                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF00FF00)
-                elif (cell & 0xf) == 0xf:
-                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFFFF0000)
-                else:
                     draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF0000FF)
-        self.mlx.mlx_put_image_to_window(self.mlx_ptr, self.window, self.buffer_img.ptr, 0, 0) """
+                elif x == self.maze.exit.x and y == self.maze.exit.y:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFFFF0000)
+                elif (cell & 0xf) == 0xf:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF000000)
+                else:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFFFFFFFF)
+        self.maze.draw_42(self.buffer_img)
 
 def close_window(xvar: XVar) -> None:
     xvar.mlx.mlx_destroy_window(xvar.mlx_ptr, xvar.window)
@@ -51,6 +51,18 @@ def gere_key(key: int, xvar: XVar) -> None:
         xvar.maze.save()
         print(f"Maze saved on '{xvar.maze.output_file}'")
 
+    elif key == 106: # 'j'
+        try:
+            for _ in range(3):
+                next(xvar.algorithm.generation)
+                xvar.render()
+        except StopIteration:
+            try:
+                for _ in range(3):
+                    next(xvar.algorithm.draw_generation)
+            except StopIteration:
+                pass
+        xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
     return 0
 
 
