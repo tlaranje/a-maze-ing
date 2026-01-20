@@ -1,33 +1,34 @@
-from typing import Optional
+from mlx import Mlx
 
 
 class ImgData:
     """Structure for image data"""
-    def __init__(self, xvar: Optional[any] = None):
-        self.width = xvar.maze.width * 16
-        self.height = xvar.maze.height * 16
-        self.img =  xvar.mlx.mlx_new_image(xvar.mlx_ptr, self.width, self.height)
 
+    def __init__(self, mlx: Mlx, mlx_ptr, width: int, height: int):
+        self.ptr = mlx.mlx_new_image(mlx_ptr, width, height)
+        self.width: int = width
+        self.height: int = height
         self.data, self.bpp, self.sl, self.iformat = \
-        xvar.mlx.mlx_get_data_addr(self.img)
+            mlx.mlx_get_data_addr(self.ptr)
+        self.total_size: int = len(self.data) - 3
+
+    def fill(self, color: int) -> None:
+        color = color.to_bytes(4, 'little')
+        for i in range(0, self.total_size - 1, 4):
+            self.data[i:i+4] = color
 
 
-    def draw_pixel(self, xvar, size: int, x: int, y: int, color: int):
-        px = x * size
-        py = y * size
-
-        for dy in range(size):
-            for dx in range(size):
-                offset = (py + dy) * self.sl + (px + dx) * 4
-                xvar.img.data[offset:offset+4] = color.to_bytes(4, 'little')
-
-        xvar.mlx.mlx_put_image_to_window(
-            xvar.mlx_ptr,
-            xvar.windows[0],
-            xvar.img.img,
-            0,
-            0
-        )
-
-
-
+def draw_wall(buffer_img: ImgData, start_x: int, start_y: int, size: int, color: int) -> None:
+    """Draw block of pixels on images buffer"""
+    start_x *= size
+    start_y *= size
+    color = color.to_bytes(4, 'little')
+    for _ in range(size):
+        x: int = start_x
+        for _ in range(size):
+            pos: int = (buffer_img.width * start_y + x) * 4
+            if pos >= buffer_img.total_size:
+                continue
+            buffer_img.data[pos:pos+4] = color
+            x += 1
+        start_y += 1
