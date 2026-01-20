@@ -18,13 +18,13 @@ OBJ=$(SRC:.c=.o)
 #VK_DEBUG=-DVK_DEBUG_LAYER
 VK_DEBUG=
 
-INCLUDES+=-I./src -I$(HOME)/.brew/include
+INCLUDES=-I./src -I$(HOME)/.brew/include
 CFLAGS+= $(INCLUDES) $(VK_DEBUG) -fPIC -Wall -O3
 LDFLAGS+=
 
 CC=clang
 
-LIBS+= -L$(HOME)/.brew/lib -lxcb -lxcb-keysyms -lvulkan -lz -lbsd
+LIBS= -L$(HOME)/.brew/lib -lxcb -lxcb-keysyms -lvulkan -lz -lbsd
 
 
 all: $(NAME) pypkg

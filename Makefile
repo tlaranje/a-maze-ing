@@ -1,5 +1,5 @@
 # === Main script ===
-MAIN        := src/a_maze_ing
+MAIN        := src.a_maze_ing
 
 # === Commands ===
 P3          := python3
@@ -11,7 +11,7 @@ CC          := gcc
 SRC         := src/a_maze_ing.py
 BIN         := a_maze_ing
 LIBXCB	    := $(HOME)/.brew/lib/libxcb.a
-LIBMLX	    := mlx/libmlx.so
+LIBMLX	    := libs/libmlx.so
 
 # === Flags (via pkg-config) ===
 PKG := pkg-config
@@ -30,8 +30,8 @@ $(LIBXCB):
 	brew install libxcb
 
 $(LIBMLX):
-	make -C mlx
-	mv mlx/python/src/mlx/* mlx
+	make -C libs
+	cp -r libs/python/src/mlx .
 
 run:
 	@$(P3) -m $(MAIN)
