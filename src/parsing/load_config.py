@@ -1,15 +1,15 @@
-from typing import Optional
+from typing import Optional as opt
 from src.maze_generator.MazeGenerator import MazeGenerator
 from src.maze_generator import Position
 
 
-def uint(string: str, only_positive: Optional[bool] = False) -> int:
+def uint(value: str,key: opt[str] = None, only_positive: opt[bool] = False) -> int:
     """Convert a string to an unsigned integer"""
-    number: int = int(string)
+    number: int = int(value)
     if only_positive and number <= 0:
-        raise ValueError("Number must be positive")
+        raise ValueError(f"{key} must be positive int")
     if number < 0:
-        raise ValueError("Number must be unsigned")
+        raise ValueError(f"{key} must be unsigned int")
     return number
 
 
@@ -17,25 +17,28 @@ def parse_config(maze: MazeGenerator, key: str, value: str) -> None:
     """Get all mandatory config datas and raise errors"""
     match key:
         case "WIDTH":
-            maze.width = uint(value, only_positive=True)
+            maze.width = uint(value, key, only_positive=True)
         case "HEIGHT":
-            maze.height = uint(value, only_positive=True)
+            maze.height = uint(value, key, only_positive=True)
         case "ENTRY":
             entry: list[int] = list(map(uint, value.split(",")))
             if len(entry) != 2:
-                raise Exception("ENTRY must be x, y values")
+                raise ValueError("ENTRY must be x, y values")
             maze.entry = Position(entry[0], entry[1])
         case "EXIT":
             exit_: list[int] = list(map(uint, value.split(",")))
             if len(exit_) != 2:
-                raise Exception("EXIT must be x, y values")
+                raise ValueError("EXIT must be x, y values")
             maze.exit = Position(exit_[0], exit_[1])
         case "OUTPUT_FILE":
             maze.output_file = value
         case "PERFECT":
             if value != "True" and value != "False":
-                raise Exception("PERFECT must be True or False")
+                raise ValueError("PERFECT must be True or False")
             maze.perfect = value == "True"
+        case "SEED":
+            if (len(value) < 1) or (len(value) > 4):
+                raise ValueError(f"Seed need to have between 1 or 4 munbers")
 
 
 def read_config_file(maze: MazeGenerator, file: str) -> None:

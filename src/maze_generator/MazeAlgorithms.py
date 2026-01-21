@@ -43,12 +43,29 @@ class MazeAlgorithms:
             dir for dir in all_directions if self.possible_move(dir, pos)
         ]
 
+    """ def possible_moves(self, pos: Position, stack: list[Position]) -> list[Position]:
+        all_directions: list[Position] = [
+            pos.up(),
+            pos.down(),
+            pos.right(),
+            pos.left()
+        ]
+        valid_directions: list[Position] = []
+        for dir in all_directions:
+            if not self.possible_move(dir, pos):
+                continue
+            if stack and dir.direction == stack[-1].direction:
+                valid_directions += [dir] * 2
+            else:
+                valid_directions.append(dir)
+        return valid_directions """
+
     def move(self, stack: list[Position], cur: Position, render: Optional[bool] = False) -> Position:
         self.maze.maze[cur.y][cur.x] |= VISITED
         valid_moves: list[Position] = self.possible_moves(cur)
         if valid_moves:
             stack.append(cur)
-            random.shuffle(valid_moves)
+            #random.shuffle(valid_moves)
             next_cell: Position = random.choice(valid_moves)
             if render:
                 draw_wall(self.buffer_img, cur.x+1, cur.y+1, 16, 0xFFFF0000)
@@ -108,7 +125,12 @@ class MazeAlgorithms:
 
     def backtracking_generate(self) -> Generator:
         maze: Maze = self.maze
-        self.find_shortest_path()
+        while True:
+            try:
+                self.find_shortest_path()
+                break
+            except Exception:
+                pass
         backtracking: list[Position] = []
         maze.clear()
         maze.draw_42(self.buffer_img)

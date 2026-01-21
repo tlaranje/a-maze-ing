@@ -47,10 +47,6 @@ def gere_key(key: int, xvar: XVar) -> None:
         xvar.buffer_img.fill(0xFF000000)
         xvar.algorithm.generation = xvar.algorithm.backtracking_generate()
 
-    elif key == 115: # 's'
-        xvar.maze.save()
-        print(f"Maze saved on '{xvar.maze.output_file}'")
-
     elif key == 106: # 'j'
         try:
             for _ in range(3):
@@ -63,6 +59,9 @@ def gere_key(key: int, xvar: XVar) -> None:
             except StopIteration:
                 pass
         xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
+    """ elif key == 115: # 's'
+        xvar.maze.save()
+        print(f"Maze saved on '{xvar.maze.output_file}'") """
     return 0
 
 
@@ -71,6 +70,7 @@ def rendering_loop(xvar: XVar) -> None:
         for _ in range(10):
             next(xvar.algorithm.generation)
     except StopIteration:
+        xvar.maze.save(xvar)
         try:
             for _ in range(10):
                 next(xvar.algorithm.draw_generation)
