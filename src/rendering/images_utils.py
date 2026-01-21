@@ -1,4 +1,5 @@
 from mlx import Mlx
+from src.maze_generator import Position, Direction
 
 
 class ImgData:
@@ -18,14 +19,39 @@ class ImgData:
             self.data[i:i+4] = color
 
 
-def draw_wall(buffer_img: ImgData, start_x: int, start_y: int, size: int, color: int) -> None:
+def draw_way(buffer_img: ImgData, start: Position, size: int, color: int) -> None:
     """Draw block of pixels on images buffer"""
-    start_x *= size
-    start_y *= size
+    border: int = 1
+    start_x = ((start.x + 1) * size)
+    size_x: int = size
+    start_y = ((start.y + 1) * size)
+    size_y: int = size
+    direction: int = start.rev_direction()
+    if direction == Direction.NORTH:
+        start_y -= border
+        start_x += border
+        size_x -= border * 2
+    elif direction == Direction.SOUTH:
+        start_y += border
+        start_x += border
+        size_x -= border * 2
+    elif direction == Direction.WEST:
+        start_y += border
+        size_y -= border * 2
+        start_x -= border
+    elif direction == Direction.EAST:
+        start_y += border
+        size_y -= border * 2
+        start_x += border
+    else:
+        start_y += border
+        size_y -= border * 2
+        start_x += border
+        size_x -= border * 2
     color = color.to_bytes(4, 'little')
-    for _ in range(size):
+    for _ in range(size_y):
         x: int = start_x
-        for _ in range(size):
+        for _ in range(size_x):
             pos: int = (buffer_img.width * start_y + x) * 4
             if pos >= buffer_img.total_size:
                 continue

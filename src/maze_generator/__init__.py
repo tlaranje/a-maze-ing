@@ -4,7 +4,7 @@ from enum import IntEnum
 
 # MACROS
 VISITED: int = 0x10
-
+IS_42: int = 0x20
 
 class Direction(IntEnum):
     """Enum of all directions"""

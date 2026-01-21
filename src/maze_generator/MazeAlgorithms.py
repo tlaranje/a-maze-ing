@@ -1,8 +1,8 @@
 import random
 from src.maze_generator import MazeGenerator as Maze
-from src.maze_generator import Position, VISITED
+from src.maze_generator import Position, VISITED, IS_42, Direction
 from typing import Optional, Generator
-from src.rendering.images_utils import ImgData, draw_wall
+from src.rendering.images_utils import ImgData, draw_way
 
 
 class MazeAlgorithms:
@@ -16,34 +16,21 @@ class MazeAlgorithms:
         self.draw_generation: Generator = None
         self.cur: Position = maze.entry
 
-    def possible_move(self, pos: Position, exclude: Position) -> bool:
+    def make_imperfect(self, chance: float) -> None:
         maze: Maze = self.maze
-        if not maze.is_inside(pos) or (maze.maze[pos.y][pos.x] & VISITED):
-            return False
-        all_directions: list[Position] = [
-            pos.up(),
-            pos.down(),
-            pos.right(),
-            pos.left()
-        ]
-        for direction in all_directions:
-            if (direction.x != exclude.x or direction.y != exclude.y) \
-                    and (maze.maze[direction.y][direction.x] & VISITED):
-                return False
-        return True
+        for y in range(1, maze.height - 1):
+            for x in range(1, maze.width - 1):
+                if (maze.maze[y][x] & IS_42) or (maze.maze[y+1][x] & IS_42):
+                    continue
+                if random.random() < chance:
+                    maze.maze[y][x] &= ~(Direction.SOUTH)
+                    maze.maze[y+1][x] &= ~(Direction.NORTH)
+                    curr: Position = Position(x, y, Direction.NORTH)
+                    draw_way(self.buffer_img, curr, 16, 0xFFFFFFFF)
+
 
     def possible_moves(self, pos: Position) -> list[Position]:
-        all_directions: list[Position] = [
-            pos.up(),
-            pos.down(),
-            pos.right(),
-            pos.left()
-        ]
-        return [
-            dir for dir in all_directions if self.possible_move(dir, pos)
-        ]
-
-    """ def possible_moves(self, pos: Position, stack: list[Position]) -> list[Position]:
+        maze: Maze = self.maze
         all_directions: list[Position] = [
             pos.up(),
             pos.down(),
@@ -52,28 +39,23 @@ class MazeAlgorithms:
         ]
         valid_directions: list[Position] = []
         for dir in all_directions:
-            if not self.possible_move(dir, pos):
-                continue
-            if stack and dir.direction == stack[-1].direction:
-                valid_directions += [dir] * 2
-            else:
+            if maze.is_inside(dir) and not (maze.maze[dir.y][dir.x] & VISITED):
                 valid_directions.append(dir)
-        return valid_directions """
+        return valid_directions
 
     def move(self, stack: list[Position], cur: Position, render: Optional[bool] = False) -> Position:
         self.maze.maze[cur.y][cur.x] |= VISITED
         valid_moves: list[Position] = self.possible_moves(cur)
         if valid_moves:
             stack.append(cur)
-            #random.shuffle(valid_moves)
             next_cell: Position = random.choice(valid_moves)
             if render:
-                draw_wall(self.buffer_img, cur.x+1, cur.y+1, 16, 0xFFFF0000)
+                draw_way(self.buffer_img, cur, 16, 0xFFFF0000)
             self.maze.maze[cur.y][cur.x] &= ~(next_cell.direction)
             self.maze.maze[next_cell.y][next_cell.x] &= ~(next_cell.rev_direction())
             return next_cell
         if render:
-            draw_wall(self.buffer_img, cur.x+1, cur.y+1, 16, 0xFFFFFFFF)
+            draw_way(self.buffer_img, cur, 16, 0xFFFFFFFF)
         return stack.pop()
 
     def found_exit(self, pos: Position) -> bool:
@@ -104,12 +86,12 @@ class MazeAlgorithms:
     def draw_shortest_path(self, color: int, stack: Optional[list[Position]] = None) -> Generator:
         if stack is None:
             for cell in self.shortest_path:
-                draw_wall(self.buffer_img, cell.x+1, cell.y+1, 16, color)
+                draw_way(self.buffer_img, cell, 16, color)
                 yield
             entry: Position = self.maze.entry
             _exit: Position = self.maze.exit
-            draw_wall(self.buffer_img, entry.x+1, entry.y+1, 16, 0xFF0000FF)
-            draw_wall(self.buffer_img, _exit.x+1, _exit.y+1, 16, 0xFFFF0000)
+            draw_way(self.buffer_img, entry, 16, 0xFF0000FF)
+            draw_way(self.buffer_img, _exit, 16, 0xFFFF0000)
             return
         path_len: int = len(self.shortest_path)
         for i, cell in enumerate(self.shortest_path):
@@ -117,7 +99,7 @@ class MazeAlgorithms:
             stack.append(cell)
             if i < path_len - 1:
                 next_cell: Position = self.shortest_path[i + 1]
-                draw_wall(self.buffer_img, cell.x+1, cell.y+1, 16, color)
+                draw_way(self.buffer_img, cell, 16, color)
                 self.maze.maze[cell.y][cell.x] &= ~(next_cell.direction)
                 self.maze.maze[next_cell.y][next_cell.x] &= ~(next_cell.rev_direction())
                 self.maze.maze[cell.y][cell.x] |= VISITED
@@ -125,12 +107,7 @@ class MazeAlgorithms:
 
     def backtracking_generate(self) -> Generator:
         maze: Maze = self.maze
-        while True:
-            try:
-                self.find_shortest_path()
-                break
-            except Exception:
-                pass
+        self.find_shortest_path()
         backtracking: list[Position] = []
         maze.clear()
         maze.draw_42(self.buffer_img)
@@ -138,4 +115,7 @@ class MazeAlgorithms:
         while backtracking:
             self.cur = self.move(backtracking, self.cur, render=True)
             yield
+        if not maze.perfect:
+            self.make_imperfect(0.1)
+        maze.save(self)
         self.draw_generation = self.draw_shortest_path(0xFF00FF00)

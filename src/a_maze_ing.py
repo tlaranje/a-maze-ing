@@ -1,4 +1,4 @@
-from .rendering.images_utils import ImgData, draw_wall
+from .rendering.images_utils import ImgData, draw_way
 from mlx import Mlx
 from src.maze_generator.MazeGenerator import MazeGenerator
 from src.maze_generator.MazeAlgorithms import MazeAlgorithms
@@ -22,20 +22,20 @@ class XVar:
             self.maze, self.buffer_img
         )
 
-    def render(self) -> None:
+    """ def render(self) -> None:
         for y, row in enumerate(self.maze.maze):
             for x, cell in enumerate(row):
                 if x == self.algorithm.cur.x and y == self.algorithm.cur.y:
-                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xfffec5d7)
+                    draw_way(self.buffer_img, x+1, y+1, 16, 0xfffec5d7)
                 elif x == self.maze.entry.x and y == self.maze.entry.y:
-                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF0000FF)
+                    draw_way(self.buffer_img, x+1, y+1, 16, 0xFF0000FF)
                 elif x == self.maze.exit.x and y == self.maze.exit.y:
-                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFFFF0000)
+                    draw_way(self.buffer_img, x+1, y+1, 16, 0xFFFF0000)
                 elif (cell & 0xf) == 0xf:
-                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF000000)
+                    draw_way(self.buffer_img, x+1, y+1, 16, 0xFF000000)
                 else:
-                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFFFFFFFF)
-        self.maze.draw_42(self.buffer_img)
+                    draw_way(self.buffer_img, x+1, y+1, 16, 0xFFFFFFFF)
+        self.maze.draw_42(self.buffer_img) """
 
 def close_window(xvar: XVar) -> None:
     xvar.mlx.mlx_destroy_window(xvar.mlx_ptr, xvar.window)
@@ -49,12 +49,11 @@ def gere_key(key: int, xvar: XVar) -> None:
 
     elif key == 106: # 'j'
         try:
-            for _ in range(3):
+            for _ in range(1):
                 next(xvar.algorithm.generation)
-                xvar.render()
         except StopIteration:
             try:
-                for _ in range(3):
+                for _ in range(1):
                     next(xvar.algorithm.draw_generation)
             except StopIteration:
                 pass
@@ -70,12 +69,12 @@ def rendering_loop(xvar: XVar) -> None:
         for _ in range(10):
             next(xvar.algorithm.generation)
     except StopIteration:
-        xvar.maze.save(xvar)
         try:
             for _ in range(10):
                 next(xvar.algorithm.draw_generation)
         except StopIteration:
             pass
+
     xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
 
 
