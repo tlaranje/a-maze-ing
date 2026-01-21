@@ -69,11 +69,11 @@ def rendering_loop(xvar: XVar) -> None:
         for _ in range(10):
             next(xvar.algorithm.generation)
     except StopIteration:
-        try:
+        """ try:
             for _ in range(10):
                 next(xvar.algorithm.draw_generation)
         except StopIteration:
-            pass
+            pass """
 
     xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
 

@@ -20,8 +20,7 @@ class MazeGenerator:
         except Exception as e:
             print(f"{type(e).__name__}: {e}!")
             exit(1)
-        #self.total_cells: int = self.width * self.height
-        self.borders: int = (self.height * 2) - 4 + self.width * 2
+        self.total_cells: int = self.width * self.height
         self.maze: list[list[int]] = [
             [0xf for _ in range(self.width)] for _ in range(self.height)
         ]
@@ -30,10 +29,13 @@ class MazeGenerator:
         return (self.width > pos.x >= 0
                 and self.height > pos.y >= 0)
 
-    def clear(self) -> None:
+    def clear(self, flag: Optional[int] = None) -> None:
         for x in range(self.width):
             for y in range(self.height):
-                self.maze[x][y] = 0xf
+                if flag is None:
+                    self.maze[y][x] = 0xf
+                else:
+                    self.maze[y][x] &= ~(flag)
 
     def save(self, algorithm) -> None:
         try:
