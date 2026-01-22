@@ -6,6 +6,8 @@ class ImgData:
     """Structure for image data"""
 
     def __init__(self, mlx: Mlx, mlx_ptr, width: int, height: int):
+        self.mlx = mlx
+        self.mlx_ptr = mlx_ptr
         self.ptr = mlx.mlx_new_image(mlx_ptr, width, height)
         self.width: int = width
         self.height: int = height
@@ -18,9 +20,13 @@ class ImgData:
         for i in range(0, self.total_size - 1, 4):
             self.data[i:i+4] = color
 
+    def copy(self) -> any:
+        new_img = ImgData(self.mlx, self.mlx_ptr, self.width, self.height)
+        new_img.data[:] = self.data[:]
+        return new_img
 
 def draw_way(buffer_img: ImgData, start: Position, size: int, color: int) -> None:
-    """Draw block of pixels on images buffer"""
+    """ Draw block of pixels on images buffer """
     border: int = 1
     start_x = ((start.x + 1) * size)
     size_x: int = size
@@ -58,3 +64,5 @@ def draw_way(buffer_img: ImgData, start: Position, size: int, color: int) -> Non
             buffer_img.data[pos:pos+4] = color
             x += 1
         start_y += 1
+
+

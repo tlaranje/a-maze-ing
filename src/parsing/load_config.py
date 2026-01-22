@@ -37,7 +37,8 @@ def parse_config(maze: MazeGenerator, key: str, value: str) -> None:
             if value != "True" and value != "False":
                 raise ValueError("PERFECT must be True or False")
             maze.perfect = value == "True"
-
+        case _:
+            raise ValueError(f"Unknown key in config file")
 
 def read_config_file(maze: MazeGenerator, file: str) -> None:
     """Read and parse the configuration file"""
