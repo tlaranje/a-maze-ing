@@ -14,8 +14,13 @@ class XVar:
     def __init__(self, file_path: str) -> None:
         self.mlx: Mlx = Mlx()
         self.mlx_ptr = self.mlx.mlx_init()
-        self.window: int = None
-        self.maze: MazeGenerator = MazeGenerator(file_path)
+        self.maze: MazeGenerator = MazeGenerator(file_path, self)
+        self.window: int = self.mlx.mlx_new_window(
+            self.mlx_ptr,
+            (self.maze.width * 16) + 32,
+            (self.maze.height * 16) + 32,
+            "a_maze_ing"
+        )
         self.buffer_img: ImgData = ImgData(
             self.mlx, self.mlx_ptr,
             (self.maze.width * 16) + 32,
@@ -27,10 +32,12 @@ class XVar:
         self.seed: int = random.randint(0, 100)
         self.finish_render: bool = False
         self.walls_color: int = 0xFF000000
+        self.is_running: bool = True
 
 
 def close_window(xvar: XVar) -> None:
     xvar.mlx.mlx_destroy_window(xvar.mlx_ptr, xvar.window)
+    xvar.mlx.mlx_release(xvar.mlx_ptr)
     xvar.mlx.mlx_loop_exit(xvar.mlx_ptr)
 
 
@@ -72,12 +79,14 @@ def gere_key(key: int, xvar: XVar) -> None:
 
 
 def rendering_loop(xvar: XVar) -> None:
+    if not xvar.is_running:
+        close_window(xvar)
     try:
-        for _ in range(5):
+        for _ in range(1000):
             next(xvar.algorithm.generation)
     except StopIteration:
         try:
-            for _ in range(5):
+            for _ in range(1000):
                 next(xvar.algorithm.draw_generation)
         except StopIteration:
             xvar.finish_render = True
@@ -91,18 +100,14 @@ if __name__ == "__main__":
     xvar = XVar("config.txt")
 
     # Windows creation
-    try:
-        xvar.window = xvar.mlx.mlx_new_window(
-            xvar.mlx_ptr,
-            (xvar.maze.width * 16) + 32,
-            (xvar.maze.height * 16) + 32,
-            "a_maze_ing")
+    """ try:
+        xvar.window =
 
         if xvar.window == None:
             raise Exception("Can't create window!")
     except Exception as e:
         print(f"Error Win create: {e}", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(1) """
     xvar.buffer_img.fill(0xFF000000)
 
     xvar.mlx.mlx_key_hook(xvar.window, gere_key, xvar)
@@ -111,5 +116,3 @@ if __name__ == "__main__":
 
     xvar.mlx.mlx_loop_hook(xvar.mlx_ptr, rendering_loop, xvar)
     xvar.mlx.mlx_loop(xvar.mlx_ptr)
-
-    xvar.mlx.mlx_release(xvar.mlx_ptr)

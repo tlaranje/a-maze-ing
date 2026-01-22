@@ -1,4 +1,4 @@
-from src.maze_generator import Position, IS_42
+from src.maze_generator import Position, IS_42, XVar
 from src.rendering.images_utils import draw_way, ImgData
 from typing import Optional
 
@@ -7,8 +7,9 @@ class MazeGenerator:
     # TODO
     """PUT DOCUMENTATION PLEASE"""
 
-    def __init__(self, file: str) -> None:
+    def __init__(self, file: str, xvar: XVar) -> None:
         from src.parsing.load_config import read_config_file
+        self.xvar: XVar = xvar
         self.height: int = None
         self.width: int = None
         self.entry: Position = None
@@ -63,7 +64,7 @@ class MazeGenerator:
                     file.write(direction_map.get(cell.direction, ""))
         except Exception as e:
             print(f"Error: {e}")
-            exit(1)
+            self.xvar.is_running = False
 
     def draw_42(self, buffer_img: Optional[ImgData] = None) -> None:
         if self.height >= 13 and self.width >= 13:

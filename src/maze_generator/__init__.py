@@ -6,6 +6,9 @@ from enum import IntEnum
 VISITED: int = 0x10
 IS_42: int = 0x20
 
+# TYPEDEF
+class XVar: pass
+
 class Direction(IntEnum):
     """Enum of all directions"""
     NORTH: int = 0x1
@@ -38,4 +41,3 @@ class Position:
             return Direction.WEST
         elif self.direction == Direction.WEST:
             return Direction.EAST
-    
