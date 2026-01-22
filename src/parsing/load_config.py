@@ -3,7 +3,8 @@ from src.maze_generator.MazeGenerator import MazeGenerator
 from src.maze_generator import Position
 
 
-def uint(value: str,key: opt[str] = None, only_positive: opt[bool] = False) -> int:
+def uint(value: str, key: opt[str] = None,
+         only_positive: opt[bool] = False) -> int:
     """Convert a string to an unsigned integer"""
     number: int = int(value)
     if only_positive and number <= 0:
@@ -36,9 +37,6 @@ def parse_config(maze: MazeGenerator, key: str, value: str) -> None:
             if value != "True" and value != "False":
                 raise ValueError("PERFECT must be True or False")
             maze.perfect = value == "True"
-        case "SEED":
-            if (len(value) < 1) or (len(value) > 4):
-                raise ValueError(f"Seed need to have between 1 or 4 munbers")
 
 
 def read_config_file(maze: MazeGenerator, file: str) -> None:

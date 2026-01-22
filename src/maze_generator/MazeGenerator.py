@@ -24,6 +24,7 @@ class MazeGenerator:
         self.maze: list[list[int]] = [
             [0xf for _ in range(self.width)] for _ in range(self.height)
         ]
+        self.seeds: dict[int, list[list[int]]] = {}
 
     def is_inside(self, pos: Position) -> bool:
         return (self.width > pos.x >= 0
@@ -63,10 +64,10 @@ class MazeGenerator:
             [48, 0,  0,  48, 0, 0, 0, 0,  0,  0,  48],
             [48, 0,  0,  48, 0, 0, 0, 0,  0,  0,  48],
             [48, 48, 48, 48, 0, 0, 0, 48, 48, 48, 48],
-            [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0 ],
-            [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0 ],
-            [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0 ],
-            [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0 ],
+            [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0],
+            [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0],
+            [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0],
+            [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0],
             [0,  0,  0,  48, 0, 0, 0, 48, 48, 48, 48]
         ]
         maze_start_x: int = (self.width - 11) // 2
@@ -77,6 +78,20 @@ class MazeGenerator:
                 if buffer_img is None:
                     continue
                 if logo_42[y][x] == 48:
-                    pos: Position = Position(maze_start_x + x, maze_start_y + y)
+                    pos: Position = Position(
+                        maze_start_x + x, maze_start_y + y)
                     draw_way(buffer_img, pos, 16, 0x100FFFFF)
 
+    def render(self, seed: int) -> Generator:
+        for y, row in enumerate(self.maze.maze):
+            for x, cell in enumerate(row):
+                if x == self.maze.entry.x and y == self.maze.entry.y:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF00FF00)
+                elif x == self.maze.exit.x and y == self.maze.exit.y:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF00FF00)
+                elif (cell & 0xf) == 0xf:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFFFF0000)
+                else:
+                    draw_wall(self.buffer_img, x+1, y+1, 16, 0xFF0000FF)
+        self.mlx.mlx_put_image_to_window(
+            self.mlx_ptr, self.windows[0], self.buffer_img.ptr, 0, 0)

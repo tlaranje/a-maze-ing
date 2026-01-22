@@ -37,17 +37,18 @@ class XVar:
                     draw_way(self.buffer_img, x+1, y+1, 16, 0xFFFFFFFF)
         self.maze.draw_42(self.buffer_img) """
 
+
 def close_window(xvar: XVar) -> None:
     xvar.mlx.mlx_destroy_window(xvar.mlx_ptr, xvar.window)
     xvar.mlx.mlx_loop_exit(xvar.mlx_ptr)
 
 
 def gere_key(key: int, xvar: XVar) -> None:
-    if key == 114: # 'r'
+    if key == 114:  # 'r'
         xvar.buffer_img.fill(0xFF000000)
-        xvar.algorithm.generation = xvar.algorithm.backtracking_generate()
+        xvar.algorithm.generation = xvar.algorithm.backtracking_generate(1234)
 
-    elif key == 106: # 'j'
+    elif key == 106:  # 'j'
         try:
             for _ in range(1):
                 next(xvar.algorithm.generation)
@@ -57,7 +58,8 @@ def gere_key(key: int, xvar: XVar) -> None:
                     next(xvar.algorithm.draw_generation)
             except StopIteration:
                 pass
-        xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
+        xvar.mlx.mlx_put_image_to_window(
+            xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
     return 0
 
 
@@ -72,7 +74,8 @@ def rendering_loop(xvar: XVar) -> None:
         except StopIteration:
             pass
 
-    xvar.mlx.mlx_put_image_to_window(xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
+    xvar.mlx.mlx_put_image_to_window(
+        xvar.mlx_ptr, xvar.window, xvar.buffer_img.ptr, 0, 0)
 
 
 if __name__ == "__main__":
@@ -101,5 +104,3 @@ if __name__ == "__main__":
     xvar.mlx.mlx_loop(xvar.mlx_ptr)
 
     xvar.mlx.mlx_release(xvar.mlx_ptr)
-
-
