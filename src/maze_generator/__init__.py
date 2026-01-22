@@ -38,3 +38,4 @@ class Position:
             return Direction.WEST
         elif self.direction == Direction.WEST:
             return Direction.EAST
+    
