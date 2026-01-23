@@ -1,10 +1,6 @@
-from .rendering.images_utils import ImgData, draw_way
 from mlx import Mlx
-from src.maze_generator.MazeGenerator import MazeGenerator
-from src.maze_generator.MazeAlgorithms import MazeAlgorithms
-from src.maze_generator import Position
-from typing import Generator
-import sys
+from maze_generator import MazeGenerator, ImgData
+from maze_generator import MazeAlgorithms
 import random
 
 
@@ -42,7 +38,7 @@ def close_window(xvar: XVar) -> None:
 
 
 def gere_key(key: int, xvar: XVar) -> None:
-    if key == 115: # 's':
+    if key == 115:  # 's':
         if not xvar.finish_render:
             return 0
         while True:

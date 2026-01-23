@@ -1,13 +1,20 @@
 from dataclasses import dataclass
 from typing import Optional
 from enum import IntEnum
+from .MazeAlgorithms import MazeAlgorithms  # noqa: F401
+from .MazeGenerator import MazeGenerator  # noqa: F401
+from rendering import ImgData, draw_way   # noqa: F401
+
 
 # MACROS
 VISITED: int = 0x10
 IS_42: int = 0x20
 
+
 # TYPEDEF
-class XVar: pass
+class XVar:
+    pass
+
 
 class Direction(IntEnum):
     """Enum of all directions"""

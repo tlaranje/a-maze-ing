@@ -1,9 +1,9 @@
 import random
-from src.maze_generator import MazeGenerator as Maze
-from src.maze_generator import Position, VISITED, IS_42, Direction
+from maze_generator import MazeGenerator as Maze
+from maze_generator import (Position, VISITED, IS_42,
+                            Direction, ImgData, draw_way)
 from typing import Optional as opt
 from typing import Generator
-from src.rendering.images_utils import ImgData, draw_way
 from collections import deque
 
 
@@ -26,8 +26,8 @@ class MazeAlgorithms:
 
         for y in range(1, maze.height - 1):
             for x in range(1, maze.width - 1):
-                if (maze.maze[y][x] & IS_42) or (random.random() > chance
-                        and not once):
+                if (maze.maze[y][x] & IS_42) or \
+                   (random.random() > chance and not once):
                     continue
                 pos: Position = Position(x, y)
                 valid_dirs: list[Position] = self.possible_paths(pos, True)
@@ -58,19 +58,25 @@ class MazeAlgorithms:
                 valid_directions.append(dir)
         return valid_directions
 
-    def possible_paths(self, pos: Position, reverse: opt[bool] = False) -> list[Position]:
+    def possible_paths(
+            self, pos: Position, reverse: opt[bool] = False
+    ) -> list[Position]:
         maze: Maze = self.maze.maze
         cell: Position = maze[pos.y][pos.x]
         if reverse:
             cell = ~(cell)
         valid_dirs: list[Position] = []
-        if not (cell & Direction.NORTH) and not (maze[pos.y-1][pos.x] & VISITED):
+        if not (cell & Direction.NORTH) and not \
+               (maze[pos.y-1][pos.x] & VISITED):
             valid_dirs.append(pos.up())
-        if not (cell & Direction.SOUTH) and not (maze[pos.y+1][pos.x] & VISITED):
+        if not (cell & Direction.SOUTH) and not \
+               (maze[pos.y+1][pos.x] & VISITED):
             valid_dirs.append(pos.down())
-        if not (cell & Direction.EAST) and not (maze[pos.y][pos.x+1] & VISITED):
+        if not (cell & Direction.EAST) and not \
+               (maze[pos.y][pos.x+1] & VISITED):
             valid_dirs.append(pos.right())
-        if not (cell & Direction.WEST) and not (maze[pos.y][pos.x-1] & VISITED):
+        if not (cell & Direction.WEST) and not \
+               (maze[pos.y][pos.x-1] & VISITED):
             valid_dirs.append(pos.left())
         return valid_dirs
 

@@ -1,6 +1,6 @@
 from typing import Optional as opt
-from src.maze_generator.MazeGenerator import MazeGenerator
-from src.maze_generator import Position
+from maze_generator import MazeGenerator
+from maze_generator import Position
 
 
 def uint(value: str, key: opt[str] = None,
@@ -38,7 +38,8 @@ def parse_config(maze: MazeGenerator, key: str, value: str) -> None:
                 raise ValueError("PERFECT must be True or False")
             maze.perfect = value == "True"
         case _:
-            raise ValueError(f"Unknown key in config file")
+            raise ValueError("Unknown key in config file")
+
 
 def read_config_file(maze: MazeGenerator, file: str) -> None:
     """Read and parse the configuration file"""

@@ -1,5 +1,5 @@
 from mlx import Mlx
-from src.maze_generator import Position, Direction
+from maze_generator import Position, Direction
 
 
 class ImgData:
@@ -25,7 +25,10 @@ class ImgData:
         new_img.data[:] = self.data[:]
         return new_img
 
-def draw_way(buffer_img: ImgData, start: Position, size: int, color: int) -> None:
+
+def draw_way(
+        buffer_img: ImgData, start: Position, size: int, color: int
+) -> None:
     """ Draw block of pixels on images buffer """
     border: int = 1
     start_x = ((start.x + 1) * size)
@@ -64,5 +67,3 @@ def draw_way(buffer_img: ImgData, start: Position, size: int, color: int) -> Non
             buffer_img.data[pos:pos+4] = color
             x += 1
         start_y += 1
-
-

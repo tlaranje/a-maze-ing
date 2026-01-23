@@ -1,5 +1,4 @@
-from src.maze_generator import Position, IS_42, XVar
-from src.rendering.images_utils import draw_way, ImgData
+from maze_generator import Position, IS_42, XVar, draw_way
 from typing import Optional
 
 
@@ -8,7 +7,7 @@ class MazeGenerator:
     """PUT DOCUMENTATION PLEASE"""
 
     def __init__(self, file: str, xvar: XVar) -> None:
-        from src.parsing.load_config import read_config_file
+        from parsing import read_config_file
         self.xvar: XVar = xvar
         self.height: int = None
         self.width: int = None
@@ -30,10 +29,10 @@ class MazeGenerator:
         entry: Position = self.entry
         for y, row in enumerate(self.maze):
             for x, cell in enumerate(row):
-                if (cell & IS_42) \
-                    and (x == entry.x and y == entry.y
-                    or x == _exit.x and y == _exit.y):
-                    print(f"Error: Entry or Exit cannot be in 42 logo cells")
+                if (cell & IS_42) and \
+                   (x == entry.x and y == entry.y or
+                   x == _exit.x and y == _exit.y):
+                    print("Error: Entry or Exit cannot be in 42 logo cells")
                     exit(1)
 
     def is_inside(self, pos: Position) -> bool:
@@ -66,30 +65,33 @@ class MazeGenerator:
             print(f"Error: {e}")
             self.xvar.is_running = False
 
-    def draw_42(self, buffer_img: Optional[ImgData] = None) -> None:
-        if self.height >= 13 and self.width >= 13:
-            logo_42: list[list[int]] = [
-                [48, 0,  0,  48, 0, 0, 0, 48, 48, 48, 48],
-                [48, 0,  0,  48, 0, 0, 0, 0,  0,  0,  48],
-                [48, 0,  0,  48, 0, 0, 0, 0,  0,  0,  48],
-                [48, 0,  0,  48, 0, 0, 0, 0,  0,  0,  48],
-                [48, 0,  0,  48, 0, 0, 0, 0,  0,  0,  48],
-                [48, 48, 48, 48, 0, 0, 0, 48, 48, 48, 48],
-                [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0],
-                [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0],
-                [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0],
-                [0,  0,  0,  48, 0, 0, 0, 48, 0,  0,  0],
-                [0,  0,  0,  48, 0, 0, 0, 48, 48, 48, 48]
-            ]
-            maze_start_x: int = (self.width - 11) // 2
-            maze_start_y: int = (self.height - 11) // 2
-            for y in range(11):
-                for x in range(11):
-                    self.maze[maze_start_y + y][maze_start_x + x] |= logo_42[y][x]
-                    if buffer_img is None:
-                        continue
-                    if logo_42[y][x] == 48:
-                        pos: Position = Position(
-                            maze_start_x + x, maze_start_y + y)
-                        draw_way(buffer_img, pos, 16, 0x10F2F2F2)
+    def draw_42(xvar: XVar) -> None:
+        maze, img = xvar.maze, xvar.algorithm.img
+        width, height = maze.width, maze.height
 
+        if width < 13 or height < 13:
+            return
+
+        logo_42 = [
+            [48, 0, 0, 48, 0, 0, 0, 48, 48, 48, 48],
+            [48, 0, 0, 48, 0, 0, 0, 0, 0, 0, 48],
+            [48, 0, 0, 48, 0, 0, 0, 0, 0, 0, 48],
+            [48, 0, 0, 48, 0, 0, 0, 0, 0, 0, 48],
+            [48, 0, 0, 48, 0, 0, 0, 0, 0, 0, 48],
+            [48, 48, 48, 48, 0, 0, 0, 48, 48, 48, 48],
+            [0, 0, 0, 48, 0, 0, 0, 48, 0, 0, 0],
+            [0, 0, 0, 48, 0, 0, 0, 48, 0, 0, 0],
+            [0, 0, 0, 48, 0, 0, 0, 48, 0, 0, 0],
+            [0, 0, 0, 48, 0, 0, 0, 48, 0, 0, 0],
+            [0, 0, 0, 48, 0, 0, 0, 48, 48, 48, 48]
+        ]
+
+        start_x, start_y = (width - 11) // 2, (height - 11) // 2
+
+        for y, row in enumerate(logo_42):
+            for x, val in enumerate(row):
+                maze.maze[start_y + y][start_x + x] |= val
+                if img and val == 48:
+                    draw_way(
+                        img,
+                        Position(start_x + x, start_y + y), 16, 0x10F2F2F2)
