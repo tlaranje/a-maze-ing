@@ -1,4 +1,4 @@
-from typing import Protocol, Any
+from typing import Protocol, Any, Dict
 from src.maze_generator import Position
 
 
@@ -11,7 +11,7 @@ class MazeBase(Protocol):
     entry: Position
     exit: Position
     perfect: bool
-    seeds: dict
+    seeds: dict[int, Dict[Any, Any]]
 
     def is_inside(self, pos: Position) -> bool:
         """Return True if the given position is inside the maze bounds."""

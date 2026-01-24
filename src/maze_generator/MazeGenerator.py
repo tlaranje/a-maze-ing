@@ -17,14 +17,13 @@ class MazeGenerator:
 
         self.xvar: XVar = xvar
 
-        # Optional até serem carregados pelo config
         self.width: int = 0
         self.height: int = 0
         self.entry: Position = Position(0, 0)
         self.exit: Position = Position(0, 0)
         self.output_file: str = ""
         self.perfect: bool = False
-        self.seeds: dict[int, dict[str, Any]] = {}
+        self.seeds: dict[int, dict[Any, Any]] = {}
 
         try:
             read_config_file(self, file)
@@ -32,7 +31,6 @@ class MazeGenerator:
             print(f"{type(e).__name__}: {e}!")
             exit(1)
 
-        # Garantir para o mypy
         assert self.width is not None
         assert self.height is not None
         assert self.entry is not None
@@ -46,13 +44,14 @@ class MazeGenerator:
             [0xF for _ in range(width)] for _ in range(height)
         ]
 
-        # Validar que ENTRY/EXIT não estão no logo
-        ex = (self.entry.x, self.entry.y)
-        ex2 = (self.exit.x, self.exit.y)
+        et = (self.entry.x, self.entry.y)
+        ex = (self.exit.x, self.exit.y)
+
+        self.draw_42()
 
         for y, row in enumerate(self.maze):
             for x, cell in enumerate(row):
-                if (cell & IS_42) and ((x, y) == ex or (x, y) == ex2):
+                if (cell & IS_42) and ((x, y) == et or (x, y) == ex):
                     print("Error: Entry or Exit cannot be in 42 logo cells")
                     exit(1)
 
@@ -103,7 +102,7 @@ class MazeGenerator:
         assert self.height is not None
 
         maze = self
-        img = getattr(self.xvar.algorithm, "img", None)  # evita erro mypy
+        img = getattr(self.xvar.algorithm, "img", None)
 
         width: int = self.width
         height: int = self.height

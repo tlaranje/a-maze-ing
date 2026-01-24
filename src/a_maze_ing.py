@@ -15,8 +15,17 @@ def gere_key(key: int, xvar: XVar) -> None:
         return
 
     assert xvar.algorithm is not None
+    if key == 104:  # 'h'
+        xvar.algorithm.draw_generation = xvar.algorithm.draw_shortest_path(
+            0xFFFFFFFF
+        )
 
-    if key == 115:  # 's'
+    elif key == 112:  # 'p'
+        xvar.algorithm.draw_generation = xvar.algorithm.draw_shortest_path(
+            0xFF0FFFFF
+        )
+
+    elif key == 115:  # 's'
         while True:
             try:
                 xvar.seed = int(input("Enter a seed: "))
@@ -47,7 +56,7 @@ def gere_key(key: int, xvar: XVar) -> None:
         xvar.algorithm.generation = xvar.algorithm.backtracking_generate(
             xvar.seed
         )
-        xvar.seed = random.randint(0, 100)
+        xvar.seed = random.randint(0, 10000)
 
 
 def rendering_loop(xvar: XVar) -> None:

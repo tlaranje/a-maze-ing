@@ -15,7 +15,7 @@ class Direction(IntEnum):
     EAST = 0x2
     SOUTH = 0x4
     WEST = 0x8
-    NONE = 0
+    NONE = 0xf
 
 
 @dataclass(frozen=True)
@@ -46,5 +46,4 @@ class Position:
             return Direction.WEST
         if self.direction == Direction.WEST:
             return Direction.EAST
-        # fallback seguro para mypy
         return Direction.NONE

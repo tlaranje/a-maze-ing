@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
-from mlx import Mlx  # type: ignore[attr-defined]
+from mlx import Mlx
 
 
 class ImgData:

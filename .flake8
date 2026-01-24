@@ -1,0 +1,6 @@
+[flake8]
+exclude =
+    libs/,
+    libs/*
+    mlx/,
+    mlx/*

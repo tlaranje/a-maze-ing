@@ -25,7 +25,7 @@ class MazeAlgorithms:
         self.draw_generation: Optional[Generator[None, None, None]] = None
 
         self.cur: Position = maze.entry
-        self.seeds: Dict[int, Dict[str, Any]] = {}
+        self.seeds: Dict[int, Dict[Any, Any]] = {}
 
     def make_imperfect(self, chance: float) -> None:
         """Add random imperfections to the maze."""

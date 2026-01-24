@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 import random
 
-from mlx import Mlx  # type: ignore[attr-defined]
+from mlx import Mlx
 from src.maze_generator.MazeGenerator import MazeGenerator
 from .ImgData import ImgData
 from src.maze_generator.MazeAlgorithms import MazeAlgorithms
@@ -22,7 +22,7 @@ class XVar:
         self.img: Optional[ImgData] = None
         self.algorithm: Optional[MazeAlgorithms] = None
 
-        self.seed: int = random.randint(0, 100)
+        self.seed: int = random.randint(0, 10000)
         self.finish_render: bool = False
         self.walls_color: int = 0xFF000000
         self.is_running: bool = True
