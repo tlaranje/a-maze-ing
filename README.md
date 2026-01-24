@@ -1,159 +1,140 @@
-# Create a README file named readme.me with the full English content
+*This project has been created as part of the 42 curriculum by joesanto, tlaranje.*
 
-content = """*This project has been created as part of the 42 curriculum by joesanto, tlaranje.*
-
-# A-Maze-ing
+# Maze Generator & Solver
 
 ## Description
 
-This project consists of developing a **maze generator and solver in Python**.
-The objective is to randomly generate mazes that can be either:
+An interactive maze generator and solver built with Python and MLX. This project creates perfect (acyclic, single-path) or imperfect (cyclic, multi-path) mazes using a backtracking algorithm, finds the shortest path between entry and exit points, and renders everything with smooth, real-time animation.
 
-- **Perfect mazes** (no cycles and only one unique path between any two points)
-- **Imperfect mazes** (with cycles and multiple possible paths between points)
+## Features
 
-In addition to generation, the program is able to **compute and display one of the shortest paths**
-between the entry and exit points.
-
-The maze is rendered in real time using the **MLX graphics library**, allowing interactive
-visualization and user input during execution.
+- **Dual Maze Types**: Generate perfect mazes (no cycles, unique paths) or imperfect mazes (cycles allowed, multiple solutions)
+- **Animated Generation**: Watch the maze build itself in real-time using recursive backtracking
+- **Pathfinding**: Automatic shortest path calculation from entry to exit
+- **Interactive Controls**: Toggle path visibility, regenerate mazes, customize colors, and set custom seeds
+- **Optimized Rendering**: Efficient frame-by-frame updates using image buffers for smooth performance
+- **Configurable**: Easy customization through a simple configuration file
 
 ## Instructions
 
-### Installation
-
-To install all required dependencies, run:
-
+```bash
 make install
+```
 
-### Execution
+This installs all required dependencies, including the MLX rendering library.
 
-To run the program, execute the following command from the root of the repository:
+## Usage
 
+```bash
 make run
+```
 
-The program reads its configuration from the `config.txt` file.
-You can customize the maze by editing this file before execution.
+The program reads settings from `config.txt` at startup. Customize your maze by editing this file before running.
 
-## Configuration File
+## Configuration
 
-The configuration file **must contain all mandatory fields** using the `KEY=VALUE` format.
+Edit `config.txt` with the following parameters (all fields required):
 
-### Mandatory Fields
+| Key | Description | Example |
+|-----|-------------|---------|
+| `WIDTH` | Maze width in cells | `WIDTH=20` |
+| `HEIGHT` | Maze height in cells | `HEIGHT=15` |
+| `ENTRY` | Entry coordinates (x,y) | `ENTRY=0,0` |
+| `EXIT` | Exit coordinates (x,y) | `EXIT=19,14` |
+| `OUTPUT_FILE` | Output filename | `OUTPUT_FILE=maze.txt` |
+| `PERFECT` | Perfect maze? (True/False) | `PERFECT=True` |
 
-WIDTH        Maze width (number of cells)        Example: WIDTH=20
-HEIGHT       Maze height (number of cells)       Example: HEIGHT=15
-ENTRY        Entry coordinates (x,y)             Example: ENTRY=0,0
-EXIT         Exit coordinates (x,y)              Example: EXIT=19,14
-OUTPUT_FILE  Output filename                     Example: OUTPUT_FILE=maze.txt
-PERFECT      Defines whether the maze is perfect Example: PERFECT=True
+## Controls
 
-If any of these fields are missing or incorrectly formatted, the program may fail to run.
+| Key | Action |
+|-----|--------|
+| `h` | Hide shortest path |
+| `p` | Show shortest path |
+| `s` | Enter specific generation seed |
+| `c` | Change wall colors |
+| `r` | Regenerate new maze |
 
-## Controls (Rendering)
+## Algorithm: Recursive Backtracking
 
-During execution, the following keyboard controls are available:
+We chose the backtracking algorithm for its elegant visualization and educational value. The algorithm:
 
-h  Hide the shortest path
-p  Show the shortest path
-s  Enter a specific seed for maze generation
-c  Change the wall colors
-r  Regenerate a new maze
+1. **Explores** all possible directions from the current cell
+2. **Tracks** decision points on a stack (using `push`/`pop` for non-recursive efficiency)
+3. **Backtracks** when hitting dead ends, popping from the stack to try alternative paths
+4. **Creates** the maze structure by carving passages and building walls
 
-## Maze Generation Algorithm
+This approach produces beautiful generation animations while teaching fundamental concepts about depth-first search and stack-based algorithms.
 
-### Chosen Algorithm: Iterative Backtracking
+## Architecture
 
-We chose the **backtracking algorithm**, implemented iteratively using a stack instead of recursion.
+The project follows clean object-oriented principles with modular, reusable components:
 
-### Why This Algorithm?
+- **Maze Generator**: Handles maze creation logic
+- **Pathfinder**: Implements shortest path algorithms
+- **Renderer**: Manages visualization and animation
 
-- It is educational and helps develop a strong understanding of backtracking concepts
-- The iterative approach avoids recursion overhead and improves performance
-- It produces visually pleasing and natural-looking mazes
-- It guarantees perfect maze generation when required
+This modular design makes the codebase highly reusable—components can be integrated into other projects like 2D games, raycasting engines, or any application requiring procedural maze generation.
 
-### Algorithm Overview
+## Instantiate the MazeGenerator as follows:
 
-1. The algorithm starts from a cell and explores all possible directions
-2. When multiple choices are available, the current position is stored on a stack
-3. Once a path is fully explored, the algorithm backtracks to the last saved position
-4. This process continues until all reachable cells have been visited
+```python
+maze_generator = MazeGenerator("path/to/config/file", xvar)
+```
+Parameters:
 
-## Code Reusability
+**xvar** - Main runtime object that holds references to rendering, windows, maze state, and algorithm instances.
 
-The project is organized into well-defined classes, each responsible for a specific task:
+Attributes:
 
-- Maze generation
-- Shortest path calculation
-- Rendering
+ - **maze_generator.maze** - Access the generated maze grid as a 2D list.
+ - **algorithm_object.shortest_path** - Access the computed shortest path through the maze via the MazeAlgorithm instance.
 
-Thanks to this modular design, several components of the project are reusable and can be applied
-to other contexts, such as:
+Notes:
+The MazeGenerator itself sets up the maze structure, handles entry/exit positions, and special features (e.g., the 42 logo). The actual maze layout and solution are generated by the assigned MazeAlgorithm.
 
-- 2D games
-- 2.5D games (e.g. raycasting)
-- Procedural map generation
-- Pathfinding systems
+## Performance Optimizations
 
-## Team and Project Management
+1. **Image Buffers**: Leveraged MLX's buffer system for faster rendering
+2. **Incremental Updates**: Only renders changed cells per frame instead of the entire maze
+3. **Non-Recursive Implementation**: Stack-based backtracking avoids recursion overhead
+4. **Efficient Data Structures**: Optimized cell representation for minimal memory footprint
 
-### Team Members
+## Development Approach
 
-- joesanto
-- tlaranje
+**Collaborative Development**: We (joesanto and tlaranje) worked together throughout the project, believing pair programming would enhance learning through:
+- Shared problem-solving perspectives
+- Real-time code review and discussion
+- Deeper understanding through teaching each other
+- Better design decisions through debate
 
-### Roles
+**Iterative Refinement**: Our development process evolved through multiple optimization phases:
+1. Initial working prototype with basic rendering
+2. Performance improvements via image buffers
+3. Partial rendering for frame-by-frame efficiency
+4. Visual polish and user interaction features
 
-We decided to work collaboratively on all parts of the project instead of assigning fixed roles.
-This allowed us to exchange ideas, debate solutions, and gain a deeper understanding of the entire project.
+## Lessons Learned
 
-### Planning and Evolution
+**What Worked Well**:
+- Collaborative development approach enhanced understanding
+- Iterative optimization led to significant performance gains
+- Clear initial goal (animated, clean rendering) kept development focused
 
-Our initial goal was to create a clean and animated maze rendering.
-While this goal remained the same, the implementation evolved significantly.
-
-At first, rendering was functional but not efficient.
-By researching MLX image buffers, we greatly improved rendering performance.
-Later, instead of rendering the entire maze every frame, we optimized the process
-by updating only the parts that changed.
-
-### What Worked Well
-
-- Iterative backtracking implementation
-- Rendering optimizations
-- Continuous collaboration and discussion
-
-### What Could Be Improved
-
-- Earlier use of static type checking (mypy) would have saved debugging time
-- Using AI earlier for design validation could have prevented misunderstandings in complex parts
-
-### Tools Used
-
-- Python
-- MLX
-- Makefile
-- Git
-- AI tools
+**Areas for Improvement**:
+- Earlier integration of `mypy` for type checking
+- More strategic use of AI for validation could have prevented misunderstandings
+- Better upfront architecture planning would have reduced refactoring time
 
 ## Resources
 
-Maze generation algorithms reference:
-https://professor-l.github.io/mazes/
+- [Maze Generation Algorithms](https://professor-l.github.io/mazes/) - Comprehensive visual explanation of various maze algorithms
+- AI assistance for complex algorithmic challenges and comprehensive testing
 
-### AI Usage
+## Tools Used
 
-AI was used to:
-- Help understand complex maze generation logic
-- Generate extensive test cases
-- Assist in problem-solving during challenging phases
+- **mypy** – Static type checking (added later in development)
+- **AI Assistants** – Used for understanding complex algorithms and generating comprehensive test cases
 
-AI was used strictly as a learning and support tool.
-"""
+---
 
-path = "/mnt/data/readme.me"
-with open(path, "w", encoding="utf-8") as f:
-    f.write(content)
-
-path
+*Built as part of the 42 curriculum—where we learn by doing.*

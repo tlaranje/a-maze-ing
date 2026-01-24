@@ -1,4 +1,4 @@
-from src.core.XVar import XVar
+from mazegen.core.XVar import XVar
 import random
 import sys
 
@@ -111,8 +111,11 @@ def main() -> None:
 
     assert xvar.window is not None
     assert xvar.img is not None
+    assert xvar.maze is not None
     xvar.img.fill(0xFF000000)
 
+    if xvar.maze.width < 13 or xvar.maze.height < 13:
+        print("Warning: Maze too small to fit 42 logo")
     xvar.mlx.mlx_key_hook(xvar.window, gere_key, xvar)
     xvar.mlx.mlx_hook(xvar.window, 33, 0, close_window, xvar)
     xvar.mlx.mlx_loop_hook(xvar.mlx_ptr, rendering_loop, xvar)

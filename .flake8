@@ -2,5 +2,5 @@
 exclude =
     libs/,
     libs/*
-    mlx/,
-    mlx/*
+    mazegen/mlx/,
+    mazegen/mlx/*

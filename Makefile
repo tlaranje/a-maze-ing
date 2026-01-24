@@ -29,13 +29,14 @@ $(LIBXCB):
 
 $(LIBMLX):
 	make -C libs
-	cp -r libs/python/src/mlx .
+	cp -r libs/python/src/mlx mazegen
+	cp $(LIBMLX) mazegen/mlx
 
 run:
 	@$(P3) $(MAIN) config.txt
 
 debug:
-	@$(P3) -m pdb $(MAIN)
+	@$(P3) -m pdb $(MAIN) config.txt
 
 clean:
 	@$(FIND) . -type d -name "__pycache__" -exec $(RM) {} +
