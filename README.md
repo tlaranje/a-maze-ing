@@ -1,175 +1,125 @@
-This project has been created as part of the 42 curriculum by joesanto, tlaranje
+# Maze Generator & Solver
 
-<div align="center">
-🌀 A‑Maze‑ing — This is the Way
-A Python Maze Generator & Solver with MLX Rendering
+*A 42 School curriculum project by joesanto and tlaranje*
 
-✨ Procedural generation, pathfinding, and smooth animations — all in one project.
+## Overview
 
-</div>
-📘 Description
+An interactive maze generator and solver built with Python and MLX. This project creates perfect (acyclic, single-path) or imperfect (cyclic, multi-path) mazes using a backtracking algorithm, finds the shortest path between entry and exit points, and renders everything with smooth, real-time animation.
 
-This project implements a fully interactive maze generator and solver written in Python.
-It supports:
+## Features
 
-    Perfect mazes — no cycles, exactly one unique path between any two points
+- **Dual Maze Types**: Generate perfect mazes (no cycles, unique paths) or imperfect mazes (cycles allowed, multiple solutions)
+- **Animated Generation**: Watch the maze build itself in real-time using recursive backtracking
+- **Pathfinding**: Automatic shortest path calculation from entry to exit
+- **Interactive Controls**: Toggle path visibility, regenerate mazes, customize colors, and set custom seeds
+- **Optimized Rendering**: Efficient frame-by-frame updates using image buffers for smooth performance
+- **Configurable**: Easy customization through a simple configuration file
 
-    Imperfect mazes — cycles allowed, multiple possible solutions
+## Installation
 
-    Shortest‑path solving between entry and exit
-
-    Real‑time rendering using the MLX graphics library
-
-The goal is to explore algorithmic design, procedural generation, and efficient rendering while maintaining clean architecture and reusable components.
-⚙️ Instructions
-🔧 Installation
-sh
-
+```bash
 make install
+```
 
-▶️ Running the Program
-sh
+This installs all required dependencies, including the MLX rendering library.
 
+## Usage
+
+```bash
 make run
+```
 
-The program automatically loads configuration values from config.txt.
-Modify this file to customize maze size, entry/exit points, output file, and maze type.
-📝 Config File Structure
+The program reads settings from `config.txt` at startup. Customize your maze by editing this file before running.
 
-Your config.txt must follow the KEY=VALUE format and include all fields below:
-Key	Description	Example
-WIDTH	Maze width (number of cells)	WIDTH=20
-HEIGHT	Maze height	HEIGHT=15
-ENTRY	Entry coordinates (x,y)	ENTRY=0,0
-EXIT	Exit coordinates (x,y)	EXIT=19,14
-OUTPUT_FILE	Output filename	OUTPUT_FILE=maze.txt
-PERFECT	Whether the maze is perfect (True/False)	PERFECT=True
-🎮 Key Bindings (Rendering Controls)
-Key	Action
-h	Hide shortest path
-p	Show shortest path
-s	Enter a custom seed
-c	Change wall colors
-r	Regenerate a new maze
-🧠 Maze Generation Algorithm
-🔍 Algorithm Used: Iterative Backtracking (Depth‑First Search)
+## Configuration
 
-We selected the backtracking algorithm because it is:
+Edit `config.txt` with the following parameters (all fields required):
 
-    Educational and intuitive
+| Key | Description | Example |
+|-----|-------------|---------|
+| `WIDTH` | Maze width in cells | `WIDTH=20` |
+| `HEIGHT` | Maze height in cells | `HEIGHT=15` |
+| `ENTRY` | Entry coordinates (x,y) | `ENTRY=0,0` |
+| `EXIT` | Exit coordinates (x,y) | `EXIT=19,14` |
+| `OUTPUT_FILE` | Output filename | `OUTPUT_FILE=maze.txt` |
+| `PERFECT` | Perfect maze? (True/False) | `PERFECT=True` |
 
-    Great for understanding DFS and state management
+## Controls
 
-    Efficient when implemented iteratively with a stack
+| Key | Action |
+|-----|--------|
+| `h` | Hide shortest path |
+| `p` | Show shortest path |
+| `s` | Enter specific generation seed |
+| `c` | Change wall colors |
+| `r` | Regenerate new maze |
 
-    Visually appealing during generation
+## Algorithm: Recursive Backtracking
 
-    Perfect for producing clean, organic maze structures
+We chose the backtracking algorithm for its elegant visualization and educational value. The algorithm:
 
-🧩 How It Works
+1. **Explores** all possible directions from the current cell
+2. **Tracks** decision points on a stack (using `push`/`pop` for non-recursive efficiency)
+3. **Backtracks** when hitting dead ends, popping from the stack to try alternative paths
+4. **Creates** the maze structure by carving passages and building walls
 
-    Start at a random cell
+This approach produces beautiful generation animations while teaching fundamental concepts about depth-first search and stack-based algorithms.
 
-    Visit unvisited neighbors, carving passages
+## Architecture
 
-    Push branching points onto a stack
+The project follows clean object-oriented principles with modular, reusable components:
 
-    When stuck, pop from the stack and continue
+- **Maze Generator**: Handles maze creation logic
+- **Pathfinder**: Implements shortest path algorithms
+- **Renderer**: Manages visualization and animation
 
-    Repeat until all cells are visited
+This modular design makes the codebase highly reusable—components can be integrated into other projects like 2D games, raycasting engines, or any application requiring procedural maze generation.
 
-This produces a perfect maze.
-To create imperfect mazes, we introduce controlled randomness to add cycles.
-♻️ Reusable Code
+## Performance Optimizations
 
-The project is structured into modular components that can be reused independently:
-🔧 Reusable Modules
+1. **Image Buffers**: Leveraged MLX's buffer system for faster rendering
+2. **Incremental Updates**: Only renders changed cells per frame instead of the entire maze
+3. **Non-Recursive Implementation**: Stack-based backtracking avoids recursion overhead
+4. **Efficient Data Structures**: Optimized cell representation for minimal memory footprint
 
-    Maze Generator — ideal for games, simulations, or procedural map creation
+## Development Approach
 
-    Pathfinding Module — applicable to AI navigation or robotics
+**Collaborative Development**: We (joesanto and tlaranje) worked together throughout the project, believing pair programming would enhance learning through:
+- Shared problem-solving perspectives
+- Real-time code review and discussion
+- Deeper understanding through teaching each other
+- Better design decisions through debate
 
-    Rendering Engine (MLX wrapper) — adaptable for:
+**Iterative Refinement**: Our development process evolved through multiple optimization phases:
+1. Initial working prototype with basic rendering
+2. Performance improvements via image buffers
+3. Partial rendering for frame-by-frame efficiency
+4. Visual polish and user interaction features
 
-        2D games
+## Lessons Learned
 
-        2.5D raycasting engines
+**What Worked Well**:
+- Collaborative development approach enhanced understanding
+- Iterative optimization led to significant performance gains
+- Clear initial goal (animated, clean rendering) kept development focused
 
-        Visual debugging tools
+**Areas for Improvement**:
+- Earlier integration of `mypy` for type checking would have caught bugs sooner
+- More strategic use of AI for validation could have prevented misunderstandings
+- Better upfront architecture planning would have reduced refactoring time
 
-The architecture encourages clean imports and easy integration into other projects.
-👥 Team & Project Management
-🧑‍🤝‍🧑 Team Members
+## Resources
 
-    joesanto — Co‑developer (algorithms, rendering, debugging)
+- [Maze Generation Algorithms](https://professor-l.github.io/mazes/) - Comprehensive visual explanation of various maze algorithms
+- AI assistance for complex algorithmic challenges and comprehensive testing
 
-    tlaranje — Co‑developer (architecture, pathfinding, optimization)
+## Technical Stack
 
-We chose to work together on all parts of the project.
-This allowed us to:
+- **Language**: Python
+- **Rendering**: MLX Graphics Library
+- **Algorithm**: Depth-First Search with Backtracking
+- **Pathfinding**: Shortest path algorithm (BFS/Dijkstra)
 
-    Share perspectives
+---
 
-    Debate solutions
-
-    Maintain a unified understanding of the entire codebase
-
-📅 Planning & Evolution
-
-Our main objective stayed constant:
-➡️ Create a clean, animated, efficient maze rendering.
-
-But our approach evolved:
-
-    Early rendering was slow → we researched MLX image buffers
-
-    We optimized by drawing only updated regions instead of the entire maze
-
-    Each iteration improved performance and clarity
-
-⭐ What Worked Well
-
-    Strong communication
-
-    Pair‑programming workflow
-
-    Continuous refactoring
-
-    Efficient debugging
-
-🛠️ What Could Be Improved
-
-    Applying mypy earlier would have prevented late‑stage fixes
-
-    Using AI earlier could have clarified complex algorithmic concepts sooner
-
-🧰 Tools Used
-
-    MLX graphics library
-
-    mypy type checking
-
-    AI assistance for:
-
-        Understanding algorithms
-
-        Generating test cases
-
-        Improving documentation
-
-📚 Resources
-🔗 Maze Generation References
-
-    https://professor-l.github.io/mazes/
-
-🤖 AI Usage
-
-AI was used to:
-
-    Understand complex algorithmic behavior
-
-    Explore alternative maze generation strategies
-
-    Produce diverse test cases
-
-    Improve documentation clarity and structure
+*Built as part of the 42 curriculum—where we learn by doing.*
