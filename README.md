@@ -1,35 +1,42 @@
-*This project has been created as part of the 42 curriculum by joesanto, tlaranje*
+This project has been created as part of the 42 curriculum by joesanto, tlaranje
 
-A‑Maze‑ing
-🧩 Description
+<div align="center">
+🌀 A‑Maze‑ing — This is the Way
+A Python Maze Generator & Solver with MLX Rendering
 
-This project consists of building a fully functional maze generator and solver in Python, capable of producing both:
+✨ Procedural generation, pathfinding, and smooth animations — all in one project.
 
-    Perfect mazes (no cycles, exactly one unique path between any two points)
+</div>
+📘 Description
 
-    Imperfect mazes (with cycles and multiple possible paths)
+This project implements a fully interactive maze generator and solver written in Python.
+It supports:
 
-The program also computes one of the shortest paths between the entry and exit points and renders the maze visually using the MLX graphics library.
-The goal is to combine algorithmic problem‑solving, rendering, and clean software architecture into a cohesive and interactive project.
+    Perfect mazes — no cycles, exactly one unique path between any two points
+
+    Imperfect mazes — cycles allowed, multiple possible solutions
+
+    Shortest‑path solving between entry and exit
+
+    Real‑time rendering using the MLX graphics library
+
+The goal is to explore algorithmic design, procedural generation, and efficient rendering while maintaining clean architecture and reusable components.
 ⚙️ Instructions
-Installation
-
-From the root of the repository:
-Code
+🔧 Installation
+sh
 
 make install
 
-Execution
-
-To run the program:
-Code
+▶️ Running the Program
+sh
 
 make run
 
-The program automatically reads the configuration from config.txt, allowing you to customize maze size, entry/exit points, output file, and whether the maze should be perfect or imperfect.
-📄 Config File Structure
+The program automatically loads configuration values from config.txt.
+Modify this file to customize maze size, entry/exit points, output file, and maze type.
+📝 Config File Structure
 
-The configuration file must follow the KEY=VALUE format and include all mandatory fields:
+Your config.txt must follow the KEY=VALUE format and include all fields below:
 Key	Description	Example
 WIDTH	Maze width (number of cells)	WIDTH=20
 HEIGHT	Maze height	HEIGHT=15
@@ -37,57 +44,52 @@ ENTRY	Entry coordinates (x,y)	ENTRY=0,0
 EXIT	Exit coordinates (x,y)	EXIT=19,14
 OUTPUT_FILE	Output filename	OUTPUT_FILE=maze.txt
 PERFECT	Whether the maze is perfect (True/False)	PERFECT=True
-🎮 Key Bindings (Rendering)
-
-During visualization, the following keys are available:
-
-    h — Hide shortest path
-
-    p — Show shortest path
-
-    s — Enter a custom seed for maze generation
-
-    c — Change wall colors
-
-    r — Regenerate a new maze
-
+🎮 Key Bindings (Rendering Controls)
+Key	Action
+h	Hide shortest path
+p	Show shortest path
+s	Enter a custom seed
+c	Change wall colors
+r	Regenerate a new maze
 🧠 Maze Generation Algorithm
-Algorithm Used: Iterative Backtracking (Depth‑First Search)
+🔍 Algorithm Used: Iterative Backtracking (Depth‑First Search)
 
-We chose the backtracking algorithm because:
+We selected the backtracking algorithm because it is:
 
-    It is intuitive and highly educational.
+    Educational and intuitive
 
-    It teaches core concepts of DFS, state tracking, and non‑recursive backtracking.
+    Great for understanding DFS and state management
 
-    It produces visually appealing mazes with a natural “carving” animation.
+    Efficient when implemented iteratively with a stack
 
-    It performs efficiently when implemented with a stack instead of recursion.
+    Visually appealing during generation
 
-How It Works (Summary)
+    Perfect for producing clean, organic maze structures
 
-    Start at a random cell.
+🧩 How It Works
 
-    Explore unvisited neighbors, carving passages as you go.
+    Start at a random cell
 
-    Each time a branching decision is made, push the current cell onto a stack.
+    Visit unvisited neighbors, carving passages
 
-    When no unvisited neighbors remain, pop from the stack and continue.
+    Push branching points onto a stack
 
-    Repeat until all cells have been visited.
+    When stuck, pop from the stack and continue
 
-This guarantees a perfect maze.
-To generate imperfect mazes, we introduce controlled randomness to create cycles.
-🔁 Reusable Code
+    Repeat until all cells are visited
 
-The project is structured into modular, reusable components:
-Reusable Modules
+This produces a perfect maze.
+To create imperfect mazes, we introduce controlled randomness to add cycles.
+♻️ Reusable Code
 
-    Maze Generator — Can be reused in games, simulations, or procedural map generation.
+The project is structured into modular components that can be reused independently:
+🔧 Reusable Modules
 
-    Pathfinding Module — Useful for AI navigation, grid‑based games, or robotics simulations.
+    Maze Generator — ideal for games, simulations, or procedural map creation
 
-    Rendering Engine (MLX wrapper) — Can be adapted for:
+    Pathfinding Module — applicable to AI navigation or robotics
+
+    Rendering Engine (MLX wrapper) — adaptable for:
 
         2D games
 
@@ -95,79 +97,79 @@ Reusable Modules
 
         Visual debugging tools
 
-The separation of concerns allows each module to be imported independently into other projects.
+The architecture encourages clean imports and easy integration into other projects.
 👥 Team & Project Management
-Team Members & Roles
+🧑‍🤝‍🧑 Team Members
 
-We chose to work together on all parts of the project rather than splitting tasks.
+    joesanto — Co‑developer (algorithms, rendering, debugging)
+
+    tlaranje — Co‑developer (architecture, pathfinding, optimization)
+
+We chose to work together on all parts of the project.
 This allowed us to:
 
-    Learn from each other’s perspectives
+    Share perspectives
 
-    Debate solutions and improve design decisions
+    Debate solutions
 
-    Maintain a shared understanding of the entire codebase
+    Maintain a unified understanding of the entire codebase
 
-Planning & Evolution
+📅 Planning & Evolution
 
-Our initial objective was clear:
-➡️ Create a clean, animated maze rendering with efficient generation.
+Our main objective stayed constant:
+➡️ Create a clean, animated, efficient maze rendering.
 
-However, our approach evolved:
+But our approach evolved:
 
-    Early rendering was functional but slow.
+    Early rendering was slow → we researched MLX image buffers
 
-    We researched MLX image buffers and significantly improved performance.
+    We optimized by drawing only updated regions instead of the entire maze
 
-    Initially, we redrew the entire maze every frame.
+    Each iteration improved performance and clarity
 
-    Later, we optimized by rendering only the updated parts, improving speed dramatically.
+⭐ What Worked Well
 
-Each iteration refined both performance and code quality.
-What Worked Well
+    Strong communication
 
-    Strong communication and pair‑programming workflow
+    Pair‑programming workflow
 
-    Continuous refactoring and optimization
+    Continuous refactoring
 
-    Clear shared goals
+    Efficient debugging
 
-    Effective debugging sessions
+🛠️ What Could Be Improved
 
-What Could Be Improved
+    Applying mypy earlier would have prevented late‑stage fixes
 
-    Applying mypy type checking earlier would have saved time later.
+    Using AI earlier could have clarified complex algorithmic concepts sooner
 
-    Using AI earlier could have helped validate our understanding of complex algorithms before implementation.
+🧰 Tools Used
 
-Tools Used
+    MLX graphics library
 
-    MLX for rendering
-
-    mypy for type checking
+    mypy type checking
 
     AI assistance for:
 
-        Understanding maze algorithms
+        Understanding algorithms
 
         Generating test cases
 
-        Clarifying edge‑case behavior
+        Improving documentation
 
 📚 Resources
-Maze Generation References
+🔗 Maze Generation References
 
-    Professor L’s excellent maze algorithm explanations:
     https://professor-l.github.io/mazes/
 
-AI Usage
+🤖 AI Usage
 
 AI was used to:
 
-    Understand complex algorithmic concepts
+    Understand complex algorithmic behavior
 
     Explore alternative maze generation strategies
 
-    Generate diverse test cases
+    Produce diverse test cases
 
-    Improve documentation clarity
+    Improve documentation clarity and structure
