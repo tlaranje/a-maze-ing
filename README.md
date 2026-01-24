@@ -1,8 +1,8 @@
+*This project has been created as part of the 42 curriculum by joesanto, tlaranje.*
+
 # Maze Generator & Solver
 
-*A 42 School curriculum project by joesanto and tlaranje*
-
-## Overview
+## Description
 
 An interactive maze generator and solver built with Python and MLX. This project creates perfect (acyclic, single-path) or imperfect (cyclic, multi-path) mazes using a backtracking algorithm, finds the shortest path between entry and exit points, and renders everything with smooth, real-time animation.
 
@@ -15,7 +15,7 @@ An interactive maze generator and solver built with Python and MLX. This project
 - **Optimized Rendering**: Efficient frame-by-frame updates using image buffers for smooth performance
 - **Configurable**: Easy customization through a simple configuration file
 
-## Installation
+## Instructions
 
 ```bash
 make install
@@ -104,7 +104,7 @@ This modular design makes the codebase highly reusable—components can be integ
 - Clear initial goal (animated, clean rendering) kept development focused
 
 **Areas for Improvement**:
-- Earlier integration of `mypy` for type checking would have caught bugs sooner
+- Earlier integration of `mypy` for type checking
 - More strategic use of AI for validation could have prevented misunderstandings
 - Better upfront architecture planning would have reduced refactoring time
 
@@ -113,12 +113,10 @@ This modular design makes the codebase highly reusable—components can be integ
 - [Maze Generation Algorithms](https://professor-l.github.io/mazes/) - Comprehensive visual explanation of various maze algorithms
 - AI assistance for complex algorithmic challenges and comprehensive testing
 
-## Technical Stack
+## Tools Used
 
-- **Language**: Python
-- **Rendering**: MLX Graphics Library
-- **Algorithm**: Depth-First Search with Backtracking
-- **Pathfinding**: Shortest path algorithm (BFS/Dijkstra)
+- **mypy** – Static type checking (added later in development)
+- **AI Assistants** – Used for understanding complex algorithms and generating comprehensive test cases
 
 ---
 
