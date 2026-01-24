@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from ctypes import c_uint
 from src.core.ImgData import ImgData
 from src.maze_generator import Position, Direction
 
@@ -7,7 +8,7 @@ from src.maze_generator import Position, Direction
 def draw_way(
     img: ImgData,
     start: Position,
-    size: int,
+    size: c_uint,
     color: int
 ) -> None:
     """Draw a colored square or corridor segment on the image buffer."""
@@ -15,10 +16,11 @@ def draw_way(
     border = 1
 
     # Base coordinates
-    start_x = (start.x + 1) * size
-    start_y = (start.y + 1) * size
-    size_x = size
-    size_y = size
+    size_int = size.value
+    start_x = (start.x + 1) * size_int
+    start_y = (start.y + 1) * size_int
+    size_x = size_int
+    size_y = size_int
 
     direction = start.rev_direction()
 
@@ -44,7 +46,7 @@ def draw_way(
     for _ in range(size_y):
         x = start_x
         for _ in range(size_x):
-            pos = (img.width * start_y + x) * 4
+            pos = (int(img.width) * start_y + x) * 4
 
             if pos < img.total_size:
                 img.data[pos:pos + 4] = color_bytes

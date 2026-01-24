@@ -1,5 +1,5 @@
 # === Main script ===
-MAIN        := src.a_maze_ing
+MAIN        := a_maze_ing.py
 
 # === Commands ===
 P3          := python3
@@ -8,8 +8,6 @@ FIND        := find
 CC          := gcc
 
 # === Sources ===
-SRC         := src/a_maze_ing.py
-BIN         := a_maze_ing
 LIBXCB	    := $(HOME)/.brew/lib/libxcb.a
 LIBMLX	    := libs/libmlx.so
 
@@ -34,7 +32,7 @@ $(LIBMLX):
 	cp -r libs/python/src/mlx .
 
 run:
-	@$(P3) -m $(MAIN)
+	@$(P3) $(MAIN) config.txt
 
 debug:
 	@$(P3) -m pdb $(MAIN)
@@ -62,12 +60,5 @@ lint:
 lint-strict:
 	@flake8 .
 	@mypy . --strict
-
-# === C build ===
-$(BIN): $(SRC)
-	$(CC) $(SRC) -o $(BIN) $(CFLAGS) $(LDFLAGS)
-
-c-run: $(BIN)
-	./$(BIN)
 
 .PHONY: install run debug clean lint lint-strict c-run

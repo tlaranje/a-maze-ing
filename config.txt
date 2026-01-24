@@ -1,6 +1,10 @@
-WIDTH=13
-HEIGHT=13
-ENTRY=12,12
-EXIT=0,0
+# This is a comment
+WIDTH=20
+# Another comment
+HEIGHT=15
+ENTRY=0,0
+EXIT=19,14
 OUTPUT_FILE=maze.txt
-PERFECT=False
+# PERFECT=False (commented out)
+PERFECT=True
+

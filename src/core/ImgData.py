@@ -1,26 +1,27 @@
 from __future__ import annotations
 
 from typing import Any
-from mlx import Mlx
+from .mlx_types import MLX
+from ctypes import c_uint
 
 
 class ImgData:
     """Container for MLX image data and metadata."""
 
     def __init__(
-            self, mlx: Mlx, mlx_ptr: Any, width: int, height: int
+            self, mlx: MLX, mlx_ptr: Any, width: c_uint, height: c_uint
     ) -> None:
         """Create a new image buffer with the given dimensions."""
-        self.mlx: Mlx = mlx
+        self.mlx: MLX = mlx
         self.mlx_ptr: Any = mlx_ptr
 
-        self.ptr: Any = mlx.mlx_new_image(mlx_ptr, width, height)
+        self.ptr = mlx.mlx_new_image(mlx_ptr, width, height)
 
-        self.width: int = width
-        self.height: int = height
+        self.width: c_uint = width
+        self.height: c_uint = height
 
         # mlx_get_data_addr returns: (bytearray, bpp, size_line, format)
-        data, bpp, sl, iformat = mlx.mlx_get_data_addr(self.ptr)
+        data, bpp, sl, iformat = self.mlx.mlx_get_data_addr(self.ptr)
 
         self.data: bytearray = data
         self.bpp: int = bpp

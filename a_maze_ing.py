@@ -1,12 +1,24 @@
 from src.core.XVar import XVar
 import random
+import sys
 
 
 def close_window(xvar: XVar) -> None:
     """Close the MLX window and terminate the MLX loop."""
-    xvar.mlx.mlx_destroy_window(xvar.mlx_ptr, xvar.window)
-    xvar.mlx.mlx_release(xvar.mlx_ptr)
-    xvar.mlx.mlx_loop_exit(xvar.mlx_ptr)
+    assert xvar.window is not None
+
+    xvar.mlx.mlx_destroy_window(
+        xvar.mlx_ptr,
+        xvar.window
+    )
+
+    xvar.mlx.mlx_release(
+        xvar.mlx_ptr
+    )
+
+    xvar.mlx.mlx_loop_exit(
+        xvar.mlx_ptr
+    )
 
 
 def gere_key(key: int, xvar: XVar) -> None:
@@ -78,6 +90,7 @@ def rendering_loop(xvar: XVar) -> None:
                 xvar.finish_render = True
 
     assert xvar.algorithm.img is not None
+    assert xvar.window is not None
 
     xvar.mlx.mlx_put_image_to_window(
         xvar.mlx_ptr,
@@ -90,9 +103,13 @@ def rendering_loop(xvar: XVar) -> None:
 
 def main() -> None:
     """Initialize the program, load the maze, and start the MLX event loop."""
+    if len(sys.argv) != 2:
+        print("Usage: make run OR python3 a_maze_ing.py <config.txt>")
+        exit(1)
     xvar = XVar()
-    xvar.setup("config.txt")
+    xvar.setup(sys.argv[1])
 
+    assert xvar.window is not None
     assert xvar.img is not None
     xvar.img.fill(0xFF000000)
 

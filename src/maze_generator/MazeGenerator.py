@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from ctypes import c_uint
 from typing import Optional, TYPE_CHECKING, Any
 from src.maze_generator import Position, IS_42
-from src.rendering import draw_way
+from src.rendering.render import draw_way
 
 if TYPE_CHECKING:
     from src.core.XVar import XVar
@@ -13,7 +14,7 @@ class MazeGenerator:
     """Maze generator and configuration handler."""
 
     def __init__(self, file: str, xvar: XVar) -> None:
-        from src.parsing import read_config_file
+        from src.parsing.load_config import read_config_file
 
         self.xvar: XVar = xvar
 
@@ -134,6 +135,6 @@ class MazeGenerator:
                     draw_way(
                         img,
                         Position(start_x + x, start_y + y),
-                        16,
+                        c_uint(16),
                         0x10F2F2F2
                     )

@@ -9,14 +9,14 @@ import os
 
 class Mlx:
 
-  def __init__(self):
+  def __init__(self) -> None:
     module_dir = os.path.dirname(os.path.abspath(__file__))
     self.so_file = os.path.join(module_dir, "libmlx.so")
     self.mlx_func = CDLL(self.so_file)
     self._python_ref_std = {}
     self._python_ref_gen = {}
     self._img_height = {}
-    
+
 # Initialisation
   def mlx_init(self):
     self.mlx_func.mlx_init.restype = c_void_p
@@ -165,7 +165,7 @@ class Mlx:
       callback_type = CFUNCTYPE(None, c_uint, py_object)
     elif x_event in x_event_mouse:
       callback_type = CFUNCTYPE(None, c_uint, c_uint, c_uint, py_object)
-    elif x_event in x_event_motion:      
+    elif x_event in x_event_motion:
       callback_type = CFUNCTYPE(None, c_uint, c_uint, py_object)
     else:
       callback_type = CFUNCTYPE(None, py_object)
@@ -205,7 +205,7 @@ class Mlx:
       self._img_height[str(img)] = height.value
     return (img, width.value, height.value)
 
-# not really usefull in Python context    
+# not really usefull in Python context
 #void	*mlx_xpm_to_image(void *mlx_ptr, const char **xpm_data,
 #			  unsigned int *width, unsigned int *height);
 

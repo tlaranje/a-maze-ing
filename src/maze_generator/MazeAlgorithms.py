@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from ctypes import c_uint
 from collections import deque
 from typing import Optional, Generator, Deque, Dict, List, Any
 import random
 
 from src.core.ImgData import ImgData
-from src.rendering import draw_way
+from src.rendering.render import draw_way
 from src.maze_generator.MazeProtocol import MazeBase
 from src.maze_generator import Position, VISITED, IS_42, Direction
 
@@ -26,6 +27,7 @@ class MazeAlgorithms:
 
         self.cur: Position = maze.entry
         self.seeds: Dict[int, Dict[Any, Any]] = {}
+        self.cell_size: c_uint = c_uint(16)
 
     def make_imperfect(self, chance: float) -> None:
         """Add random imperfections to the maze."""
@@ -54,7 +56,7 @@ class MazeAlgorithms:
                 maze.maze[wall.y][wall.x] &= ~int(wall.rev_direction())
 
                 curr = Position(x, y, wall.rev_direction())
-                draw_way(self.img, curr, 16, 0xFFFFFFFF)
+                draw_way(self.img, curr, self.cell_size, 0xFFFFFFFF)
                 once = False
 
     def possible_moves(self, pos: Position) -> List[Position]:
@@ -113,7 +115,7 @@ class MazeAlgorithms:
             next_cell = random.choice(valid_moves)
 
             if render:
-                draw_way(self.img, cur, 16, 0xFFFF0000)
+                draw_way(self.img, cur, self.cell_size, 0xFFFF0000)
 
             assert next_cell.direction is not None
             self.maze.maze[cur.y][cur.x] &= ~int(next_cell.direction)
@@ -124,7 +126,7 @@ class MazeAlgorithms:
             return next_cell
 
         if render:
-            draw_way(self.img, cur, 16, 0xFFFFFFFF)
+            draw_way(self.img, cur, self.cell_size, 0xFFFFFFFF)
 
         return stack.pop()
 
@@ -158,13 +160,13 @@ class MazeAlgorithms:
     def draw_shortest_path(self, color: int) -> Generator[None, None, None]:
         """Draw the shortest path step by step."""
         for cell in self.shortest_path:
-            draw_way(self.img, cell, 16, color)
+            draw_way(self.img, cell, self.cell_size, color)
             yield
 
         entry = self.maze.entry
         _exit = self.maze.exit
-        draw_way(self.img, entry, 16, 0xFF00FF00)
-        draw_way(self.img, _exit, 16, 0xFFFF0000)
+        draw_way(self.img, entry, self.cell_size, 0xFF00FF00)
+        draw_way(self.img, _exit, self.cell_size, 0xFFFF0000)
 
     def backtracking_generate(self, seed: int) -> Generator[None, None, None]:
         """Generate the maze using backtracking, with seed caching."""
