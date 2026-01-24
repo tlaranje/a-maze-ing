@@ -1,50 +1,50 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Optional
 from enum import IntEnum
-from .MazeAlgorithms import MazeAlgorithms  # noqa: F401
-from .MazeGenerator import MazeGenerator  # noqa: F401
-from rendering import ImgData, draw_way   # noqa: F401
-
 
 # MACROS
 VISITED: int = 0x10
 IS_42: int = 0x20
 
 
-# TYPEDEF
-class XVar:
-    pass
-
-
 class Direction(IntEnum):
-    """Enum of all directions"""
-    NORTH: int = 0x1
-    EAST: int = 0x2
-    SOUTH: int = 0x4
-    WEST: int = 0x8
+    """Enum of all directions."""
+    NORTH = 0x1
+    EAST = 0x2
+    SOUTH = 0x4
+    WEST = 0x8
+    NONE = 0
 
 
 @dataclass(frozen=True)
 class Position:
-    """Represent the 2D position in the maze"""
+    """Represent a 2D position in the maze."""
     x: int
     y: int
     direction: Optional[Direction] = None
 
-    def up(self): return Position(self.x, self.y - 1, Direction.NORTH)
+    def up(self) -> Position:
+        return Position(self.x, self.y - 1, Direction.NORTH)
 
-    def down(self): return Position(self.x, self.y + 1, Direction.SOUTH)
+    def down(self) -> Position:
+        return Position(self.x, self.y + 1, Direction.SOUTH)
 
-    def right(self): return Position(self.x + 1, self.y, Direction.EAST)
+    def right(self) -> Position:
+        return Position(self.x + 1, self.y, Direction.EAST)
 
-    def left(self): return Position(self.x - 1, self.y, Direction.WEST)
+    def left(self) -> Position:
+        return Position(self.x - 1, self.y, Direction.WEST)
 
     def rev_direction(self) -> Direction:
         if self.direction == Direction.NORTH:
             return Direction.SOUTH
-        elif self.direction == Direction.SOUTH:
+        if self.direction == Direction.SOUTH:
             return Direction.NORTH
-        elif self.direction == Direction.EAST:
+        if self.direction == Direction.EAST:
             return Direction.WEST
-        elif self.direction == Direction.WEST:
+        if self.direction == Direction.WEST:
             return Direction.EAST
+        # fallback seguro para mypy
+        return Direction.NONE
