@@ -1,7 +1,7 @@
 *This project has been created as part of the 42 curriculum by joesanto, tlaranje.*
 
 # Maze Generator & Solver
-
+[Ver demonstração em vídeo](./a-maze-ing_Showcase.mp4)
 ## Description
 
 An interactive maze generator and solver built with Python and MLX. This project creates perfect (acyclic, single-path) or imperfect (cyclic, multi-path) mazes using a backtracking algorithm, finds the shortest path between entry and exit points, and renders everything with smooth, real-time animation.
